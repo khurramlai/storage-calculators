@@ -1,0 +1,68 @@
+---
+import LegalLayout from "~/layouts/LegalLayout.astro";
+import { SITE_NAME, SITE_URL } from "~/lib/seo";
+import { getAllCalculators } from "~/lib/registry";
+
+const all = getAllCalculators();
+
+const seo = {
+  title: `About | ${SITE_NAME}`,
+  description:
+    "About StorageCalc: why this independent calculator site exists, who runs it, how the math is sourced from vendor docs, and how to get in touch.",
+  canonical: `${SITE_URL}/about/`,
+};
+---
+
+<LegalLayout
+  seo={seo}
+  title="About StorageCalc"
+  subtitle="An independent, free collection of storage calculators, built because vendor calculators were hiding the math."
+>
+  <h2>Why this exists</h2>
+  <p>Every storage vendor (Hikvision, Synology, AWS, Azure) publishes a calculator on their site. They're all <em>okay</em>. But they have problems:</p>
+  <ul>
+    <li>They lock you into one vendor's options. Want to compare AWS S3 vs Azure Blob? You're flipping between three browser tabs and trying to remember egress rates.</li>
+    <li>They hide the formula. You enter inputs, see a number, and have no idea how it got there.</li>
+    <li>They're built for sales funnels. Marketing CTA on every screen, account creation prompts, "talk to sales" friction.</li>
+  </ul>
+  <p>StorageCalc fixes all three. Every calculator shows its formula. Every page is free, signup-free, and built to give you a real number fast.</p>
+
+  <h2>How the math is sourced</h2>
+  <p>Each calculator's formula comes from publicly documented industry standards:</p>
+  <ul>
+    <li><strong>RAID</strong>: SNIA RAID definitions and standard formulas for capacity, parity, and fault tolerance.</li>
+    <li><strong>Surveillance</strong>: Published Hikvision, Hanwha (Wisenet), and Axis storage planning tables. Bitrate references at 25 fps per resolution, scaled by codec efficiency.</li>
+    <li><strong>Cloud</strong>: List prices from AWS S3, Azure Blob, Google Cloud Storage, and Firebase Cloud Storage public pricing pages, US region.</li>
+  </ul>
+  <p>Where vendors don't publish exact numbers, we use conservative middle-of-the-road values that match real-world deployments. See each calculator's "About this calculator" section for the specific source.</p>
+
+  <h2>What's here today</h2>
+  <p>{all.length} calculators across RAID, surveillance, NAS, cloud storage, and specialty domains. The full list is on the <a href="/">homepage</a>. More are added as the keyword research surfaces underserved searches.</p>
+
+  <h2>What's NOT here</h2>
+  <ul>
+    <li>No accounts. There is nothing to sign up for.</li>
+    <li>No tracking until you accept the cookie banner. See <a href="/privacy-policy/">Privacy Policy</a>.</li>
+    <li>No paid placement. Calculators aren't ranked by who pays, they're ranked alphabetically or by category.</li>
+    <li>No vendor sponsorship. If you see ads in the future, they'll be Google AdSense, clearly labeled.</li>
+  </ul>
+
+  <h2>How this site stays free</h2>
+  <p>The site is static-hosted on Cloudflare Pages (free tier) and may eventually display Google ads to cover the domain renewal. Calculator math itself will always be free with no signup.</p>
+
+  <h2>Contributing / corrections</h2>
+  <p>If you find a bug, a wrong vendor spec, or have a calculator you'd like added:</p>
+  <ul>
+    <li>Open an issue or PR on the project's repository (link to be added).</li>
+    <li>Or email the operator (link to be added).</li>
+  </ul>
+  <p>Bug reports about wrong math are the highest priority, accuracy is the whole point.</p>
+
+  <h2>Legal</h2>
+  <ul>
+    <li><a href="/privacy-policy/">Privacy Policy</a></li>
+    <li><a href="/cookie-policy/">Cookie Policy</a></li>
+    <li><a href="/terms-of-service/">Terms of Service</a></li>
+    <li><a href="/disclaimer/">Disclaimer</a>, the most important one. Read it before relying on any number for a real-world decision.</li>
+  </ul>
+</LegalLayout>

@@ -1,0 +1,102 @@
+---
+import LegalLayout from "~/layouts/LegalLayout.astro";
+import { SITE_NAME, SITE_URL } from "~/lib/seo";
+
+const seo = {
+  title: `Cookie Policy | ${SITE_NAME}`,
+  description:
+    "Cookie policy for StorageCalc: which cookies we use (Google Analytics and Google Ads when consented), why, and how to opt out.",
+  canonical: `${SITE_URL}/cookie-policy/`,
+};
+---
+
+<LegalLayout
+  seo={seo}
+  title="Cookie Policy"
+  subtitle="Which cookies StorageCalc uses, why, and how to control them."
+  updated="2026-05-18"
+>
+  <h2>The short version</h2>
+  <p>We don't set any cookies until you click <strong>Accept</strong> on the cookie banner. If you click <strong>Reject</strong>, no cookies are set and every calculator continues to work normally. Your choice is stored in <code>localStorage</code>, not a cookie.</p>
+
+  <h2>1. What are cookies?</h2>
+  <p>Cookies are small text files that websites place on your device. They can store preferences, track behavior across pages, or enable functionality. Different cookies have different purposes, some are essential, some are optional.</p>
+
+  <h2>2. Cookies we use</h2>
+
+  <h3>Essential cookies</h3>
+  <p>None. The site is fully functional without any cookies.</p>
+
+  <h3>Analytics cookies (only if you accept)</h3>
+  <table class="my-4 w-full border-collapse text-sm">
+    <thead>
+      <tr class="border-b border-slate-300 text-left">
+        <th class="py-2 pr-3 font-semibold text-slate-900">Cookie</th>
+        <th class="py-2 pr-3 font-semibold text-slate-900">Provider</th>
+        <th class="py-2 pr-3 font-semibold text-slate-900">Purpose</th>
+        <th class="py-2 font-semibold text-slate-900">Duration</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="border-b border-slate-200">
+        <td class="py-2 pr-3 font-mono text-xs">_ga</td>
+        <td class="py-2 pr-3">Google Analytics</td>
+        <td class="py-2 pr-3">Distinguishes unique users.</td>
+        <td class="py-2">2 years</td>
+      </tr>
+      <tr class="border-b border-slate-200">
+        <td class="py-2 pr-3 font-mono text-xs">_ga_*</td>
+        <td class="py-2 pr-3">Google Analytics</td>
+        <td class="py-2 pr-3">Persists session state.</td>
+        <td class="py-2">2 years</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Advertising cookies (only if you accept and ads are served)</h3>
+  <table class="my-4 w-full border-collapse text-sm">
+    <thead>
+      <tr class="border-b border-slate-300 text-left">
+        <th class="py-2 pr-3 font-semibold text-slate-900">Cookie</th>
+        <th class="py-2 pr-3 font-semibold text-slate-900">Provider</th>
+        <th class="py-2 pr-3 font-semibold text-slate-900">Purpose</th>
+        <th class="py-2 font-semibold text-slate-900">Duration</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="border-b border-slate-200">
+        <td class="py-2 pr-3 font-mono text-xs">__gads / __gpi</td>
+        <td class="py-2 pr-3">Google AdSense</td>
+        <td class="py-2 pr-3">Ad delivery, frequency capping, fraud prevention.</td>
+        <td class="py-2">13 months</td>
+      </tr>
+      <tr class="border-b border-slate-200">
+        <td class="py-2 pr-3 font-mono text-xs">IDE / NID</td>
+        <td class="py-2 pr-3">Google Ads</td>
+        <td class="py-2 pr-3">Ad personalization across Google services.</td>
+        <td class="py-2">13 months</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>3. localStorage</h2>
+  <p>We store one item in your browser's <code>localStorage</code>:</p>
+  <ul>
+    <li><code>consent</code>: stores your cookie banner choice (<code>accepted</code>, <code>rejected</code>, or <code>dismissed</code>) so we don't ask again.</li>
+  </ul>
+  <p>This is not a cookie and is not transmitted to any server. Clear it via your browser's developer tools or by clearing site data.</p>
+
+  <h2>4. How to manage cookies</h2>
+  <ul>
+    <li><strong>This site:</strong> use the cookie banner to accept or reject. To change your choice later, clear site data and reload.</li>
+    <li><strong>Google Analytics:</strong> install the <a href="https://tools.google.com/dlpage/gaoptout" rel="noopener" target="_blank">opt-out browser add-on</a>.</li>
+    <li><strong>Google Ads:</strong> visit <a href="https://adssettings.google.com" rel="noopener" target="_blank">Google Ads Settings</a> to manage ad personalization.</li>
+    <li><strong>All cookies:</strong> use your browser's cookie controls (typically under Settings → Privacy).</li>
+  </ul>
+
+  <h2>5. Do Not Track</h2>
+  <p>This site does not currently respond to "Do Not Track" browser signals because there's no industry consensus on how to interpret them. Use the cookie banner to opt out instead, it's enforced.</p>
+
+  <h2>6. Changes to this policy</h2>
+  <p>Material changes will be reflected in the "Last updated" date. If a new cookie category is introduced, the banner will re-prompt for consent.</p>
+</LegalLayout>

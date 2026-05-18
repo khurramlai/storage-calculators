@@ -1,0 +1,62 @@
+---
+import LegalLayout from "~/layouts/LegalLayout.astro";
+import { SITE_NAME, SITE_URL } from "~/lib/seo";
+
+const seo = {
+  title: `Disclaimer | ${SITE_NAME}`,
+  description:
+    "Disclaimer for StorageCalc: calculators are estimates, vendor pricing changes, RAID isn't backup, and other things to know before relying on results.",
+  canonical: `${SITE_URL}/disclaimer/`,
+};
+---
+
+<LegalLayout
+  seo={seo}
+  title="Disclaimer"
+  subtitle="What these calculators can and can't tell you. Read before relying on a number for a real-world decision."
+  updated="2026-05-18"
+>
+  <h2>General</h2>
+  <p>The calculators on StorageCalc are <strong>estimation tools for planning purposes only</strong>. They use standard industry formulas and publicly documented vendor specifications, but real-world results vary. Always verify against current vendor documentation before purchasing hardware, signing cloud contracts, or making safety-critical decisions.</p>
+
+  <h2>RAID calculators</h2>
+  <ul>
+    <li><strong>RAID is not a backup.</strong> RAID protects against drive failure, not file corruption, ransomware, accidental deletion, fire, or theft. Always maintain off-array backups for anything you can't afford to lose.</li>
+    <li>Speed multipliers assume idealized parallel I/O and no controller bottleneck. Real-world throughput depends on RAID controller, bus speed, drive type (HDD vs SSD vs NVMe), stripe size, and concurrent workload.</li>
+    <li>Fault tolerance figures are best-case during steady-state. Rebuild windows and unrecoverable read error (URE) rates can change the practical math, especially on large arrays with multi-TB drives.</li>
+    <li>Filesystem overhead (ext4, XFS, ZFS, NTFS) typically claims 1–10% of raw capacity. Snapshots, deduplication, and reserved blocks reduce it further.</li>
+  </ul>
+
+  <h2>Surveillance / CCTV calculators</h2>
+  <ul>
+    <li>Bitrate estimates are based on published vendor planning tables (Hikvision, Hanwha, Axis, etc.). Real bitrate varies ±20% with scene complexity, busy scenes use more, static scenes use less.</li>
+    <li>Smart-codec savings (H.265+, WiseStream II, Zipstream) range from 50% to 80% depending on scene activity. We model 75%, which approximates a typical urban scene.</li>
+    <li>Motion-only recording's 40% duty-cycle assumption is conservative. With well-tuned smart event detection (person/vehicle classification), real recording time can be under 10% of the active window.</li>
+    <li>Audio recording, dual-stream archives, and bookmark/incident clips add 5–15% on top of the calculator's video-only estimate.</li>
+    <li>Drive recommendations are surveillance-grade only (WD Purple, Seagate SkyHawk, Toshiba S300). Consumer drives will work briefly and fail early under 24/7 write loads.</li>
+  </ul>
+
+  <h2>Cloud storage calculators</h2>
+  <ul>
+    <li><strong>Prices change frequently.</strong> The numbers in this calculator are list prices for the most common US region as of early 2025. Real cost depends on region, committed-use discounts, enterprise agreements, and provider price changes since publication.</li>
+    <li>Free tiers are partially modeled. Egress free tiers (100 GB/mo on AWS, Azure, GCP) are subtracted. Storage free tiers (Firebase Spark 5 GB, AWS Free Tier 5 GB for 12 months) are not subtracted because they apply only to new accounts and have eligibility rules.</li>
+    <li>Operations pricing varies by tier, we use the published list price per operation category. Reserved Capacity, Savings Plans, and CUDs can reduce real costs by 20–50%.</li>
+    <li>Cross-region transfer, request-spike charges, and Lifecycle transition fees can add line items not modeled here.</li>
+    <li><strong>Do not use this calculator for invoicing or budget commitments without verifying against each provider's official pricing calculator and your account's actual rates.</strong></li>
+  </ul>
+
+  <h2>Self-storage and physical storage calculators</h2>
+  <ul>
+    <li>Capacity estimates assume reasonable packing density. Awkward items (mattresses, sofas, exercise equipment) and protective spacing reduce usable volume by 20–40%.</li>
+    <li>Storage unit pricing varies dramatically by location, season, and demand. Use the calculator's size recommendation, but quote real prices locally.</li>
+  </ul>
+
+  <h2>Vendor trademarks</h2>
+  <p>StorageCalc references multiple vendors (Hikvision, Hanwha, Axis, Genetec, Ubiquiti, Synology, Amazon, Microsoft, Google, Firebase, WD, Seagate, Toshiba) by their product names. These trademarks belong to their respective owners. Use of vendor names here is descriptive, it does not imply endorsement, partnership, affiliation, or sponsorship.</p>
+
+  <h2>Not professional advice</h2>
+  <p>This site is operated by an independent publisher, not a certified storage architect, surveillance installer, or cloud advisory firm. For business-critical, safety-critical, or compliance-driven storage decisions, consult a qualified professional.</p>
+
+  <h2>No warranty</h2>
+  <p>The Service is provided "as is" with no warranty of any kind. See our <a href="/terms-of-service/">Terms of Service</a> for the full disclaimer and limitation of liability.</p>
+</LegalLayout>

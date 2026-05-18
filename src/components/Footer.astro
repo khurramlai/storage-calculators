@@ -1,0 +1,93 @@
+---
+import Logo from "./Logo.astro";
+import { CATEGORY_LABELS, getCalculatorsByCategory, getAllCalculators } from "~/lib/registry";
+
+const year = new Date().getFullYear();
+const categories = Object.entries(CATEGORY_LABELS) as [
+  keyof typeof CATEGORY_LABELS,
+  string,
+][];
+
+// Top-volume calculators for the "popular" footer column
+const popular = getAllCalculators()
+  .filter((c) =>
+    [
+      "raid-storage-calculator",
+      "cctv-storage-calculator",
+      "nvr-storage-calculator",
+      "s3-storage-calculator",
+      "azure-storage-calculator",
+      "google-cloud-storage-calculator",
+    ].includes(c.slug)
+  )
+  .slice(0, 6);
+---
+
+<footer class="mt-20 border-t border-slate-200 bg-white">
+  <div class="container-wide py-12">
+    <div class="grid gap-10 lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        <Logo />
+        <p class="mt-4 max-w-sm text-sm text-slate-600">
+          Free calculators for RAID, surveillance, NAS, and cloud storage.
+          Accurate math, no signup, no tracking until you accept.
+        </p>
+        <p class="mt-4 text-xs text-slate-500">
+          Made for IT admins, sysadmins, installers, and anyone who's tired of
+          vendor calculators that hide the formula.
+        </p>
+      </div>
+
+      <div class="grid gap-10 sm:grid-cols-3 lg:col-span-8">
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-900">Categories</h3>
+          <ul class="mt-4 space-y-2 text-sm">
+            {
+              categories.map(([key, label]) => {
+                const count = getCalculatorsByCategory(key).length;
+                if (!count) return null;
+                return (
+                  <li>
+                    <a href={`/#${key}`} class="text-slate-600 hover:text-brand-700">
+                      {label} <span class="text-slate-400">({count})</span>
+                    </a>
+                  </li>
+                );
+              })
+            }
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-900">Popular</h3>
+          <ul class="mt-4 space-y-2 text-sm">
+            {
+              popular.map((c) => (
+                <li>
+                  <a href={`/${c.slug}/`} class="text-slate-600 hover:text-brand-700">
+                    {c.title.replace(" Storage Calculator", "")}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-900">Legal</h3>
+          <ul class="mt-4 space-y-2 text-sm">
+            <li><a href="/about/" class="text-slate-600 hover:text-brand-700">About</a></li>
+            <li><a href="/disclaimer/" class="text-slate-600 hover:text-brand-700">Disclaimer</a></li>
+            <li><a href="/privacy-policy/" class="text-slate-600 hover:text-brand-700">Privacy Policy</a></li>
+            <li><a href="/cookie-policy/" class="text-slate-600 hover:text-brand-700">Cookie Policy</a></li>
+            <li><a href="/terms-of-service/" class="text-slate-600 hover:text-brand-700">Terms of Service</a></li>
+            <li><a href="/sitemap-index.xml" class="text-slate-600 hover:text-brand-700">Sitemap</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-12 flex flex-col items-start justify-between gap-3 border-t border-slate-200 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center">
+      <p>&copy; {year} StorageCalc. All calculators free to use. Results are estimates. See <a href="/disclaimer/" class="underline hover:text-brand-700">Disclaimer</a>.</p>
+      <p>Built with Astro + Tailwind. Static, fast, privacy-first.</p>
+    </div>
+  </div>
+</footer>

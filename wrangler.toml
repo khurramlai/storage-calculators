@@ -1,0 +1,5 @@
+# Cloudflare Pages config. Static output goes to ./dist after `npm run build`.
+# Deploy with:  npx wrangler pages deploy dist --project-name=storage-calculators
+name = "storage-calculators"
+compatibility_date = "2026-01-01"
+pages_build_output_dir = "dist"

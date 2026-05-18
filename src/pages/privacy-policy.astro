@@ -1,0 +1,81 @@
+---
+import LegalLayout from "~/layouts/LegalLayout.astro";
+import { SITE_NAME, SITE_URL } from "~/lib/seo";
+
+const seo = {
+  title: `Privacy Policy | ${SITE_NAME}`,
+  description:
+    "Privacy policy for StorageCalc: what we collect (almost nothing), what we don't, and how Google Analytics and Google Ads cookies are handled.",
+  canonical: `${SITE_URL}/privacy-policy/`,
+};
+---
+
+<LegalLayout
+  seo={seo}
+  title="Privacy Policy"
+  subtitle="What we collect, why, and how to opt out. Short version: almost nothing personal, but we use Google Analytics and may show Google ads."
+  updated="2026-05-18"
+>
+  <h2>The short version</h2>
+  <p>StorageCalc is a static website. There is no user registration, no database storing your inputs, no contact form, and no email collection. Every calculator runs entirely in your browser.</p>
+  <p>The only data we collect is anonymous usage analytics through <strong>Google Analytics</strong>, and we may serve advertisements via <strong>Google Ads</strong>. Both can be declined via the cookie banner.</p>
+
+  <h2>1. Who we are</h2>
+  <p>This site, StorageCalc, is operated by an independent publisher providing free storage calculators. We're not a company, not VC-backed, and don't sell data. You can reach us through the contact information on the <a href="/about/">About page</a>.</p>
+
+  <h2>2. Information we collect</h2>
+  <h3>2.1 What we DO collect</h3>
+  <ul>
+    <li><strong>Analytics data</strong> via Google Analytics 4: anonymized page views, approximate country/city, device type, referring URL, time on page. This helps us understand which calculators are useful and which to improve.</li>
+    <li><strong>Ad-related data</strong> via Google Ads / AdSense (if and when enabled): cookies used for ad personalization and frequency capping.</li>
+  </ul>
+
+  <h3>2.2 What we DO NOT collect</h3>
+  <ul>
+    <li>Names, email addresses, phone numbers, or any personally identifying information.</li>
+    <li>Calculator inputs (drive counts, camera bitrates, cloud storage amounts), these live only in your browser.</li>
+    <li>Account credentials, there are no accounts.</li>
+    <li>Payment information, the site is free; nothing is sold.</li>
+  </ul>
+
+  <h2>3. Cookies</h2>
+  <p>See the dedicated <a href="/cookie-policy/">Cookie Policy</a> for full details. In short:</p>
+  <ul>
+    <li>No cookies are set until you accept via the cookie banner.</li>
+    <li>If you accept: Google Analytics and Google Ads cookies are set.</li>
+    <li>If you reject: nothing is set, and you can continue using every calculator.</li>
+    <li>Your choice is stored in <code>localStorage</code> on your device.</li>
+  </ul>
+
+  <h2>4. Google Analytics</h2>
+  <p>We use Google Analytics 4 to measure aggregate traffic. Google may use the data per their own <a href="https://policies.google.com/privacy" rel="noopener" target="_blank">privacy policy</a>. You can install the <a href="https://tools.google.com/dlpage/gaoptout" rel="noopener" target="_blank">Google Analytics opt-out browser add-on</a> to block GA across all sites, or simply reject cookies on this site.</p>
+  <p>We do not enable Google Signals, demographics, or advertising features on our GA property.</p>
+
+  <h2>5. Google Ads / AdSense</h2>
+  <p>This site may display ads served by Google AdSense or other ad networks. These networks may use cookies to show relevant ads. You can manage ad personalization at <a href="https://adssettings.google.com" rel="noopener" target="_blank">Google Ads Settings</a>.</p>
+
+  <h2>6. Third-party services</h2>
+  <ul>
+    <li><strong>Cloudflare</strong> (hosting/CDN), sees IP addresses for routing. Cloudflare's privacy policy applies.</li>
+    <li><strong>Google Fonts</strong>, the Inter font is loaded from Google's CDN. Google may log the request.</li>
+    <li><strong>Google Analytics</strong>, see section 4.</li>
+    <li><strong>Google Ads</strong>, see section 5.</li>
+  </ul>
+
+  <h2>7. Your rights (GDPR / CCPA)</h2>
+  <p>Because we don't collect personal data, most data-subject rights don't apply. For Google Analytics' processing of your data, exercise your rights through Google directly using the links above. You can also:</p>
+  <ul>
+    <li>Reject all cookies via our cookie banner.</li>
+    <li>Clear your browser cookies and <code>localStorage</code> at any time.</li>
+    <li>Use private/incognito mode for zero persistence.</li>
+  </ul>
+
+  <h2>8. Children</h2>
+  <p>This site is not directed at children under 13. We don't knowingly collect data from anyone.</p>
+
+  <h2>9. Changes to this policy</h2>
+  <p>If this policy changes materially, we'll update the "Last updated" date at the top of this page. Continued use of the site after changes constitutes acceptance of the revised policy.</p>
+
+  <h2>10. Contact</h2>
+  <p>Questions about this policy? See the <a href="/about/">About page</a> for contact information.</p>
+</LegalLayout>

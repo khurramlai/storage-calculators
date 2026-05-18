@@ -1,0 +1,127 @@
+---
+import Logo from "./Logo.astro";
+import { CATEGORY_LABELS, getCalculatorsByCategory } from "~/lib/registry";
+
+const categories = Object.entries(CATEGORY_LABELS) as [
+  keyof typeof CATEGORY_LABELS,
+  string,
+][];
+const categoriesWithCounts = categories
+  .map(([key, label]) => ({ key, label, count: getCalculatorsByCategory(key).length }))
+  .filter((c) => c.count > 0);
+---
+
+<header class="sticky top-0 z-30 border-b border-slate-200/70 bg-white/85 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+  <div class="container-wide flex h-16 items-center justify-between gap-4">
+    <Logo />
+
+    <nav class="hidden items-center gap-1 md:flex" aria-label="Primary">
+      <div class="relative" data-dropdown>
+        <button
+          type="button"
+          class="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-900"
+          aria-haspopup="true"
+          aria-expanded="false"
+          data-dropdown-trigger
+        >
+          Calculators
+          <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.38a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+          </svg>
+        </button>
+        <div
+          class="invisible absolute left-1/2 mt-2 w-72 -translate-x-1/2 rounded-2xl border border-slate-200 bg-white p-2 opacity-0 shadow-xl shadow-slate-900/10 transition data-[open=true]:visible data-[open=true]:opacity-100"
+          data-dropdown-menu
+          role="menu"
+        >
+          {
+            categoriesWithCounts.map(({ key, label, count }) => (
+              <a
+                href={`/#${key}`}
+                class="flex items-center justify-between rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-50 hover:text-brand-700"
+                role="menuitem"
+              >
+                <span>{label}</span>
+                <span class={`accent-${key} rounded-full px-2 py-0.5 text-xs font-semibold ring-1`}>
+                  {count}
+                </span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+
+      <a href="/about/" class="rounded-full px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-900">About</a>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href="/raid-storage-calculator/" class="btn-primary hidden sm:inline-flex">
+        Try RAID calculator
+        <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+          <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd" />
+        </svg>
+      </a>
+      <button
+        type="button"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 md:hidden"
+        aria-label="Open menu"
+        aria-expanded="false"
+        data-mobile-trigger
+      >
+        <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="hidden border-t border-slate-200 bg-white px-4 py-3 md:hidden" data-mobile-menu>
+    <div class="space-y-1">
+      {
+        categoriesWithCounts.map(({ key, label, count }) => (
+          <a
+            href={`/#${key}`}
+            class="flex items-center justify-between rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-50"
+          >
+            <span>{label}</span>
+            <span class={`accent-${key} rounded-full px-2 py-0.5 text-xs font-semibold ring-1`}>{count}</span>
+          </a>
+        ))
+      }
+      <a href="/about/" class="block rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">About</a>
+      <a href="/raid-storage-calculator/" class="btn-primary mt-2 w-full">Try RAID calculator</a>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Lightweight dropdown + mobile menu, no framework, no dependency.
+  document.querySelectorAll<HTMLElement>("[data-dropdown]").forEach((root) => {
+    const trigger = root.querySelector<HTMLButtonElement>("[data-dropdown-trigger]");
+    const menu = root.querySelector<HTMLElement>("[data-dropdown-menu]");
+    if (!trigger || !menu) return;
+    const setOpen = (open: boolean) => {
+      menu.dataset.open = String(open);
+      trigger.setAttribute("aria-expanded", String(open));
+    };
+    trigger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      setOpen(menu.dataset.open !== "true");
+    });
+    document.addEventListener("click", (e) => {
+      if (!root.contains(e.target as Node)) setOpen(false);
+    });
+    trigger.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") setOpen(false);
+    });
+  });
+
+  const mobileTrigger = document.querySelector<HTMLButtonElement>("[data-mobile-trigger]");
+  const mobileMenu = document.querySelector<HTMLElement>("[data-mobile-menu]");
+  if (mobileTrigger && mobileMenu) {
+    mobileTrigger.addEventListener("click", () => {
+      const isOpen = !mobileMenu.classList.contains("hidden");
+      mobileMenu.classList.toggle("hidden", isOpen);
+      mobileTrigger.setAttribute("aria-expanded", String(!isOpen));
+    });
+  }
+</script>

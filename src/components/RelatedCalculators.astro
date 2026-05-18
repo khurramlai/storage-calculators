@@ -1,0 +1,20 @@
+---
+import type { CalculatorConfig } from "~/lib/types";
+import CalculatorCard from "./CalculatorCard.astro";
+
+interface Props {
+  calculators: CalculatorConfig[];
+}
+const { calculators } = Astro.props;
+---
+
+{
+  calculators.length > 0 && (
+    <section class="mt-12">
+      <h2 class="mb-4 text-2xl font-bold text-slate-900">Related Calculators</h2>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {calculators.map((c) => <CalculatorCard calc={c} />)}
+      </div>
+    </section>
+  )
+}

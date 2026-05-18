@@ -1,0 +1,74 @@
+---
+import LegalLayout from "~/layouts/LegalLayout.astro";
+import { SITE_NAME, SITE_URL } from "~/lib/seo";
+
+const seo = {
+  title: `Terms of Service | ${SITE_NAME}`,
+  description:
+    "Terms of service for StorageCalc, a free no-signup storage calculator site. Read before relying on calculator output for financial or safety decisions.",
+  canonical: `${SITE_URL}/terms-of-service/`,
+};
+---
+
+<LegalLayout
+  seo={seo}
+  title="Terms of Service"
+  subtitle="By using StorageCalc you agree to these terms. They're short, please read them anyway."
+  updated="2026-05-18"
+>
+  <h2>1. Acceptance</h2>
+  <p>By accessing or using StorageCalc (the "Service"), you agree to be bound by these Terms of Service. If you don't agree, don't use the Service. The Service is provided free of charge with no account required.</p>
+
+  <h2>2. The Service</h2>
+  <p>StorageCalc provides interactive calculators for estimating storage capacity, cost, and configuration across various technologies (RAID, surveillance, NAS, cloud storage, etc.). All calculations run in your browser; no data is sent to a server.</p>
+
+  <h2>3. License to use</h2>
+  <p>We grant you a personal, non-exclusive, non-transferable license to use the Service for lawful purposes. You may:</p>
+  <ul>
+    <li>Use the calculators for personal, educational, or commercial planning.</li>
+    <li>Share links to specific calculator pages.</li>
+    <li>Cite the calculators in articles, presentations, or specifications (please link back).</li>
+  </ul>
+  <p>You may not:</p>
+  <ul>
+    <li>Scrape, mirror, or rehost the calculators or their math without permission.</li>
+    <li>Reverse-engineer, modify, or attempt to extract underlying data structures.</li>
+    <li>Use the Service in any way that violates applicable law or infringes others' rights.</li>
+  </ul>
+
+  <h2>4. No warranty, calculators are estimates</h2>
+  <p><strong>The Service is provided "AS IS" with no warranty of any kind.</strong> Calculators are estimation tools based on publicly available specifications and standard industry formulas. We do not guarantee accuracy, completeness, or fitness for any particular purpose.</p>
+  <ul>
+    <li>Vendor specifications change. RAID formulas have edge cases. Cloud pricing changes monthly. Surveillance bitrates vary with scene complexity.</li>
+    <li>Always verify critical numbers against current vendor documentation before purchasing, deploying, or making contractual commitments.</li>
+    <li>See our <a href="/disclaimer/">Disclaimer</a> for category-specific caveats.</li>
+  </ul>
+
+  <h2>5. Not professional advice</h2>
+  <p>The Service is not a substitute for professional advice from a qualified storage architect, surveillance installer, cloud architect, or other expert. Decisions involving budget, safety, regulatory compliance, or critical infrastructure should be reviewed by a qualified professional.</p>
+
+  <h2>6. Limitation of liability</h2>
+  <p>To the maximum extent permitted by law, in no event shall StorageCalc, its operator, or contributors be liable for any indirect, incidental, special, consequential, or punitive damages (including loss of profits, data, goodwill, or other intangible losses) arising from your use of the Service, even if advised of the possibility.</p>
+  <p>Our total cumulative liability for any claim arising from the Service is limited to <strong>USD $0</strong> (zero), reflecting that the Service is provided free of charge.</p>
+
+  <h2>7. Third-party links and ads</h2>
+  <p>The Service may contain links to third-party sites (vendor documentation, related tools) and may display ads served by Google. We don't control those sites or ads and aren't responsible for their content, privacy practices, or accuracy.</p>
+
+  <h2>8. Intellectual property</h2>
+  <p>The Service, including its design, code, and calculator implementations, is the intellectual property of the operator. Trademarks referenced (Hikvision, AWS, Azure, Synology, etc.) belong to their respective owners. Using their names here is descriptive only and does not imply endorsement, partnership, or affiliation.</p>
+
+  <h2>9. Privacy</h2>
+  <p>Your use is also governed by our <a href="/privacy-policy/">Privacy Policy</a> and <a href="/cookie-policy/">Cookie Policy</a>.</p>
+
+  <h2>10. Changes</h2>
+  <p>We may update these Terms from time to time. Material changes will be reflected in the "Last updated" date. Continued use after changes constitutes acceptance.</p>
+
+  <h2>11. Termination</h2>
+  <p>We may suspend or remove the Service at any time without notice. You may stop using it at any time.</p>
+
+  <h2>12. Governing law</h2>
+  <p>These Terms are governed by the laws of the jurisdiction where the operator resides, without regard to conflict-of-law principles. Any disputes will be resolved in that jurisdiction's courts.</p>
+
+  <h2>13. Contact</h2>
+  <p>Questions? See the <a href="/about/">About page</a>.</p>
+</LegalLayout>

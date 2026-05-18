@@ -1,0 +1,28 @@
+---
+interface Props {
+  /** Show the StorageCalc text label beside the logo image. On by default. */
+  text?: boolean;
+  size?: "sm" | "md" | "lg";
+}
+const { text = true, size = "md" } = Astro.props;
+
+const heightClass = size === "sm" ? "h-7" : size === "lg" ? "h-12" : "h-9";
+const textSize = size === "sm" ? "text-base" : size === "lg" ? "text-xl" : "text-lg";
+---
+
+<a href="/" class="group inline-flex items-center gap-2.5 font-semibold text-slate-900">
+  <img
+    src="/images/logo.png"
+    alt="StorageCalc logo"
+    class={`${heightClass} w-auto object-contain`}
+    width="180"
+    height="48"
+    decoding="async"
+    fetchpriority="high"
+  />
+  {text && (
+    <span class={`${textSize} font-bold tracking-tight`}>
+      Storage<span class="text-brand-600">Calc</span>
+    </span>
+  )}
+</a>

@@ -1,0 +1,63 @@
+---
+import type { CalculatorCategory } from "~/lib/types";
+interface Props {
+  category: CalculatorCategory;
+  class?: string;
+}
+const { category, class: className = "" } = Astro.props;
+---
+
+{
+  category === "raid" && (
+    <svg viewBox="0 0 24 24" fill="none" class={className} aria-hidden="true">
+      <rect x="3" y="4" width="18" height="4" rx="1.5" stroke="currentColor" stroke-width="1.8" />
+      <rect x="3" y="10" width="18" height="4" rx="1.5" stroke="currentColor" stroke-width="1.8" />
+      <rect x="3" y="16" width="18" height="4" rx="1.5" stroke="currentColor" stroke-width="1.8" />
+      <circle cx="7" cy="6" r="0.9" fill="currentColor" />
+      <circle cx="7" cy="12" r="0.9" fill="currentColor" />
+      <circle cx="7" cy="18" r="0.9" fill="currentColor" />
+    </svg>
+  )
+}
+{
+  category === "surveillance" && (
+    <svg viewBox="0 0 24 24" fill="none" class={className} aria-hidden="true">
+      <rect x="3" y="6" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.8" />
+      <path d="M17 10l4-2v8l-4-2v-4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+      <circle cx="10" cy="11" r="2.5" stroke="currentColor" stroke-width="1.6" />
+    </svg>
+  )
+}
+{
+  category === "nas" && (
+    <svg viewBox="0 0 24 24" fill="none" class={className} aria-hidden="true">
+      <rect x="4" y="3" width="16" height="18" rx="2" stroke="currentColor" stroke-width="1.8" />
+      <line x1="7" y1="7" x2="17" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      <line x1="7" y1="11" x2="17" y2="11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      <line x1="7" y1="15" x2="17" y2="15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      <circle cx="8" cy="18.5" r="0.8" fill="currentColor" />
+    </svg>
+  )
+}
+{
+  category === "cloud" && (
+    <svg viewBox="0 0 24 24" fill="none" class={className} aria-hidden="true">
+      <path d="M7 18a4 4 0 010-8 5 5 0 019.6-1.4A4 4 0 0117 18H7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+    </svg>
+  )
+}
+{
+  category === "self-storage" && (
+    <svg viewBox="0 0 24 24" fill="none" class={className} aria-hidden="true">
+      <path d="M3 10l9-6 9 6v10a1 1 0 01-1 1H4a1 1 0 01-1-1V10z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+      <rect x="9" y="13" width="6" height="8" rx="0.5" stroke="currentColor" stroke-width="1.6" />
+    </svg>
+  )
+}
+{
+  category === "specialty" && (
+    <svg viewBox="0 0 24 24" fill="none" class={className} aria-hidden="true">
+      <path d="M12 3l2.4 5 5.6.8-4 3.9.9 5.5L12 15.6 7.1 18.2 8 12.7 4 8.8l5.6-.8L12 3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+    </svg>
+  )
+}

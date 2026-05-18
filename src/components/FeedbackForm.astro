@@ -1,0 +1,216 @@
+---
+/**
+ * Feedback form posted to Web3Forms (https://web3forms.com).
+ * No backend required: form is POSTed to api.web3forms.com which emails
+ * the submission to whoever owns the configured access key.
+ *
+ * Setup:
+ *   1. Get a free access key at https://web3forms.com
+ *   2. Add it to .env as PUBLIC_WEB3FORMS_KEY=...
+ *   3. Done. Submissions arrive at the email tied to that key.
+ */
+
+interface Props {
+  /** Calculator title, used as the email subject prefix */
+  calculatorTitle: string;
+  /** Calculator slug, included in the submission for context */
+  calculatorSlug: string;
+}
+
+const { calculatorTitle, calculatorSlug } = Astro.props;
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? "";
+const isConfigured = accessKey && accessKey !== "YOUR_WEB3FORMS_ACCESS_KEY_HERE";
+---
+
+<section
+  class="rounded-2xl border border-amber-200 bg-amber-50/60 p-6 sm:p-8"
+  aria-labelledby="feedback-heading"
+>
+  <details class="group" data-feedback-details>
+    <summary class="flex cursor-pointer items-start gap-4 list-none marker:hidden">
+      <span
+        class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700 ring-1 ring-amber-200"
+        aria-hidden="true"
+      >
+        <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5">
+          <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </span>
+      <div class="min-w-0 flex-1">
+        <h2 id="feedback-heading" class="text-lg font-semibold text-slate-900">
+          Spot an error? Have feedback?
+        </h2>
+        <p class="mt-1 text-sm text-slate-600">
+          Tell us what's wrong with the math, what's missing, or what would make this calculator better. We read everything.
+        </p>
+      </div>
+      <span
+        class="ml-auto inline-flex h-9 items-center gap-1 rounded-full bg-white px-3 text-sm font-semibold text-amber-800 ring-1 ring-amber-200 transition group-open:bg-amber-100"
+        aria-hidden="true"
+      >
+        <span class="group-open:hidden">Open form</span>
+        <span class="hidden group-open:inline">Close</span>
+        <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 transition group-open:rotate-180">
+          <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.38a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+        </svg>
+      </span>
+    </summary>
+
+    <div class="mt-6 border-t border-amber-200 pt-6">
+      {
+        !isConfigured ? (
+          <div role="alert" class="rounded-xl border border-amber-300 bg-amber-100 px-4 py-3 text-sm text-amber-900">
+            <strong>Form not configured yet.</strong> The site owner needs to add a
+            Web3Forms access key to <code class="rounded bg-white px-1.5 py-0.5 font-mono text-xs">.env</code> as <code class="rounded bg-white px-1.5 py-0.5 font-mono text-xs">PUBLIC_WEB3FORMS_KEY</code>.
+            Free at <a href="https://web3forms.com" class="underline" rel="noopener noreferrer" target="_blank">web3forms.com</a>.
+          </div>
+        ) : (
+          <form
+            data-feedback-form
+            class="space-y-4"
+            action="https://api.web3forms.com/submit"
+            method="POST"
+          >
+            <input type="hidden" name="access_key" value={accessKey} />
+            <input type="hidden" name="subject" value={`Feedback: ${calculatorTitle}`} />
+            <input type="hidden" name="calculator_slug" value={calculatorSlug} />
+            <input type="hidden" name="from_name" value="StorageCalc feedback" />
+            {/* Honeypot — bots fill this, humans don't. Web3Forms drops these. */}
+            <input
+              type="checkbox"
+              name="botcheck"
+              class="hidden"
+              tabindex="-1"
+              autocomplete="off"
+            />
+
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label for="feedback-type" class="mb-1 block text-sm font-medium text-slate-800">
+                  Type of feedback
+                </label>
+                <select
+                  id="feedback-type"
+                  name="feedback_type"
+                  required
+                  class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
+                >
+                  <option value="">Pick one</option>
+                  <option value="Error in math">Error in math or formula</option>
+                  <option value="Missing feature">Missing feature or input</option>
+                  <option value="Wrong vendor data">Outdated vendor spec or pricing</option>
+                  <option value="Suggestion">Suggestion or improvement</option>
+                  <option value="Bug">UI bug or broken behavior</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="feedback-email" class="mb-1 block text-sm font-medium text-slate-800">
+                  Your email <span class="font-normal text-slate-500">(optional)</span>
+                </label>
+                <input
+                  id="feedback-email"
+                  type="email"
+                  name="email"
+                  autocomplete="email"
+                  placeholder="you@example.com"
+                  class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="feedback-message" class="mb-1 block text-sm font-medium text-slate-800">
+                Your message
+              </label>
+              <textarea
+                id="feedback-message"
+                name="message"
+                required
+                rows="5"
+                minlength="10"
+                maxlength="2000"
+                placeholder="What did you find? Be specific so we can fix it fast."
+                class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
+              ></textarea>
+              <p class="mt-1 text-xs text-slate-500">
+                We don't store this anywhere. It just lands in our inbox.
+              </p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+              <button
+                type="submit"
+                class="inline-flex items-center justify-center gap-1.5 rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-brand-600/30 transition hover:bg-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+                data-feedback-submit
+              >
+                <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+                  <path d="M3.105 2.289a.75.75 0 00-.826.95l1.414 4.926A1.5 1.5 0 005.135 9.25h6.115a.75.75 0 010 1.5H5.135a1.5 1.5 0 00-1.442 1.085l-1.414 4.926a.75.75 0 00.826.95 28.896 28.896 0 0015.293-7.154.75.75 0 000-1.114A28.897 28.897 0 003.105 2.289z" />
+                </svg>
+                <span data-feedback-submit-label>Send feedback</span>
+              </button>
+              <p
+                class="text-xs text-slate-600 transition"
+                role="status"
+                aria-live="polite"
+                data-feedback-status
+              ></p>
+            </div>
+          </form>
+        )
+      }
+    </div>
+  </details>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>("[data-feedback-form]").forEach((form) => {
+    const submitBtn = form.querySelector<HTMLButtonElement>("[data-feedback-submit]");
+    const submitLabel = form.querySelector<HTMLElement>("[data-feedback-submit-label]");
+    const status = form.querySelector<HTMLElement>("[data-feedback-status]");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!submitBtn || !submitLabel || !status) return;
+
+      // Honeypot — if filled, silently drop
+      const honeypot = form.querySelector<HTMLInputElement>('input[name="botcheck"]');
+      if (honeypot?.checked) return;
+
+      submitBtn.disabled = true;
+      submitLabel.textContent = "Sending...";
+      status.textContent = "";
+      status.className = "text-xs text-slate-600 transition";
+
+      const data = new FormData(form);
+      try {
+        const res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: { Accept: "application/json" },
+          body: data,
+        });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok && (json.success === true || json.success === undefined)) {
+          form.reset();
+          // Replace form with success state
+          const parent = form.parentElement;
+          if (parent) {
+            parent.innerHTML =
+              '<div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-900"><strong>Thanks!</strong> Your feedback landed in our inbox. We read every message.</div>';
+          }
+        } else {
+          status.textContent = json.message || "Send failed. Try again in a moment.";
+          status.className = "text-xs text-red-700 transition";
+          submitBtn.disabled = false;
+          submitLabel.textContent = "Send feedback";
+        }
+      } catch (err) {
+        status.textContent = "Send failed. Check your connection and try again.";
+        status.className = "text-xs text-red-700 transition";
+        submitBtn.disabled = false;
+        submitLabel.textContent = "Send feedback";
+      }
+    });
+  });
+</script>
