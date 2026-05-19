@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://storage-calculators.pages.dev/sitemap-index.xml
+Sitemap: https://storagecalculators.com/sitemap-index.xml

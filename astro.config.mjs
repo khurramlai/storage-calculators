@@ -5,7 +5,7 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  site: "https://storage-calculators.pages.dev",
+  site: "https://storagecalculators.com",
   trailingSlash: "ignore",
   integrations: [
     react(),

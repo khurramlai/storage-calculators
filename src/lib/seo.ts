@@ -1,7 +1,7 @@
 import type { CalculatorConfig } from "./types";
 
 export const SITE_NAME = "Storage Calculators";
-export const SITE_URL = "https://storage-calculators.pages.dev";
+export const SITE_URL = "https://storagecalculators.com";
 export const SITE_TAGLINE =
   "Free calculators for RAID, NAS, CCTV, cloud storage, and self-storage needs.";
 
