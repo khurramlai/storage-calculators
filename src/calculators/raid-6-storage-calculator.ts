@@ -2,15 +2,16 @@ import type { CalculatorConfig } from "~/lib/types";
 
 const config: CalculatorConfig = {
   slug: "raid-6-storage-calculator",
-  title: "RAID 6 Storage Calculator",
+  title: "RAID 6 Calculator",
   description:
-    "RAID 6 storage calculator with double-parity math. Get usable capacity, two-drive fault tolerance, and read/write speeds at any drive count. No signup.",
+    "RAID 6 calculator with double-parity math. Get usable capacity, two-drive fault tolerance, and read/write speeds at any drive count. Free, no signup.",
   tagline: "Double-parity striping, survives two simultaneous drive failures.",
   category: "raid",
   keywords: [
-    "raid 6 storage calculator",
     "raid 6 calculator",
+    "raid 6 storage calculator",
     "calculate raid 6 storage",
+    "raid 6 capacity calculator",
   ],
   widget: "raid",
   widgetProps: {

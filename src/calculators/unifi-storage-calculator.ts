@@ -2,7 +2,7 @@ import type { CalculatorConfig } from "~/lib/types";
 
 const config: CalculatorConfig = {
   slug: "unifi-storage-calculator",
-  title: "UniFi Protect Storage Calculator",
+  title: "UniFi Storage Calculator",
   description:
     "UniFi storage calculator for Protect deployments with G3, G4, and G5 cameras. Sizes HDDs for UNVR, UNVR Pro, and Cloud Key Gen2 Plus with H.265 defaults.",
   tagline: "UniFi Protect storage sizing for any G3/G4/G5 camera mix at any retention.",

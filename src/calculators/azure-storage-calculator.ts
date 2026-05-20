@@ -2,7 +2,7 @@ import type { CalculatorConfig } from "~/lib/types";
 
 const config: CalculatorConfig = {
   slug: "azure-storage-calculator",
-  title: "Azure Blob Storage Calculator",
+  title: "Azure Storage Calculator",
   description:
     "Azure storage calculator for Blob Storage Hot, Cool, Cold, and Archive tiers. Models transactions, egress, and retrieval fees in one monthly estimate.",
   tagline:

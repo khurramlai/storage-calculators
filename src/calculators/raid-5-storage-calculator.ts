@@ -2,16 +2,16 @@ import type { CalculatorConfig } from "~/lib/types";
 
 const config: CalculatorConfig = {
   slug: "raid-5-storage-calculator",
-  title: "RAID 5 Storage Calculator",
+  title: "RAID 5 Calculator",
   description:
-    "RAID 5 storage calculator: get usable capacity, parity overhead, fault tolerance, and throughput math for any drive count and size. Free, no signup.",
+    "RAID 5 calculator: get usable capacity, parity overhead, fault tolerance, and throughput for any drive count and size. Free, instant, no signup.",
   tagline: "Single-parity striping, high efficiency, survives one drive failure.",
   category: "raid",
   keywords: [
-    "raid 5 storage calculator",
-    "raid 5 calculate storage",
-    "calculate raid 5 storage",
     "raid 5 calculator",
+    "raid 5 storage calculator",
+    "calculate raid 5 storage",
+    "raid 5 capacity calculator",
   ],
   widget: "raid",
   widgetProps: {

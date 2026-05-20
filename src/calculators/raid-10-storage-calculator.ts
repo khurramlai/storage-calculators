@@ -2,14 +2,16 @@ import type { CalculatorConfig } from "~/lib/types";
 
 const config: CalculatorConfig = {
   slug: "raid-10-storage-calculator",
-  title: "RAID 10 Storage Calculator",
+  title: "RAID 10 Calculator",
   description:
-    "RAID 10 storage calculator for striped mirror arrays. Usable capacity, mirror overhead, fault tolerance, and write-friendly throughput at any pair count.",
+    "RAID 10 calculator for striped mirror arrays. Get usable capacity, mirror overhead, fault tolerance, and write-friendly throughput at any pair count.",
   tagline: "Striped mirrors, fastest RAID for writes, survives one drive per mirror pair.",
   category: "raid",
   keywords: [
-    "raid 10 storage calculator",
     "raid 10 calculator",
+    "raid 10 storage calculator",
+    "raid 1+0 calculator",
+    "raid 10 capacity calculator",
   ],
   widget: "raid",
   widgetProps: {

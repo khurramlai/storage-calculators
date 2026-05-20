@@ -2,7 +2,7 @@ import type { CalculatorConfig } from "~/lib/types";
 
 const config: CalculatorConfig = {
   slug: "hanwha-storage-calculator",
-  title: "Hanwha (Wisenet) Storage Calculator",
+  title: "Hanwha Storage Calculator",
   description:
     "Hanwha storage calculator for Wisenet cameras with WiseStream II codec savings modeled. Defaults match P-series and Q-series feeding XRN, SRN, or WRN NVRs.",
   tagline: "Storage planning for Hanwha Wisenet cameras with WiseStream II compression modeled.",

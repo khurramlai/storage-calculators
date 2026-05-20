@@ -64,7 +64,7 @@ const popular = getAllCalculators()
               popular.map((c) => (
                 <li>
                   <a href={`/${c.slug}/`} class="text-slate-600 hover:text-brand-700">
-                    {c.title.replace(" Storage Calculator", "")}
+                    {c.title.replace(/ (Storage )?Calculator$/, "")}
                   </a>
                 </li>
               ))

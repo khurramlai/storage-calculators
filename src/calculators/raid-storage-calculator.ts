@@ -2,18 +2,18 @@ import type { CalculatorConfig } from "~/lib/types";
 
 const config: CalculatorConfig = {
   slug: "raid-storage-calculator",
-  title: "RAID Storage Calculator",
+  title: "RAID Calculator",
   description:
-    "Free RAID storage calculator for levels 0, 1, 5, 6, 10, 50 and 60. Get usable capacity, fault tolerance, and read/write speeds for any drive count in seconds.",
+    "Free RAID calculator for levels 0, 1, 5, 6, 10, 50 and 60. Get usable capacity, fault tolerance, and read/write speeds for any drive count in seconds.",
   tagline:
     "Pick a RAID level, set your drive count and size, and see exactly how much usable storage you'll get.",
   category: "raid",
   keywords: [
-    "raid storage calculator",
     "raid calculator",
+    "raid storage calculator",
+    "raid capacity calculator",
     "calculate raid storage",
-    "disk storage calculator",
-    "storage spaces calculator",
+    "raid array calculator",
   ],
   widget: "raid",
   widgetProps: {
