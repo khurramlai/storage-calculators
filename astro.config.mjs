@@ -4,9 +4,12 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 
+import cloudflare from "@astrojs/cloudflare";
+
 export default defineConfig({
   site: "https://storagecalculators.com",
   trailingSlash: "ignore",
+
   integrations: [
     react(),
     mdx(),
@@ -68,10 +71,14 @@ export default defineConfig({
       },
     }),
   ],
+
   vite: {
     plugins: [tailwindcss()],
   },
+
   build: {
     format: "directory",
   },
+
+  adapter: cloudflare()
 });
