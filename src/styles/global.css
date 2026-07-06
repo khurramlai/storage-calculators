@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* Self-hosted Inter (latin subset, same weights we actually use) so the font
+ * never blocks render on a third-party Google Fonts / gstatic round-trip.
+ * Vite bundles these to same-origin, hashed woff2 files with font-display:swap. */
+@import "@fontsource/inter/latin-400.css";
+@import "@fontsource/inter/latin-500.css";
+@import "@fontsource/inter/latin-600.css";
+@import "@fontsource/inter/latin-700.css";
+@import "@fontsource/inter/latin-800.css";
+
 @theme {
   /* Primary brand, indigo/violet for the SaaS-grade feel */
   --color-brand-50: #eef2ff;

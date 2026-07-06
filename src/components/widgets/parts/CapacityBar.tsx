@@ -13,11 +13,26 @@ interface Segment {
   color: string;
 }
 
+/**
+ * Pick black or white label text for a given segment fill so the on-bar
+ * percentage clears WCAG AA contrast. White-on-amber/slate failed the audit;
+ * this derives the readable color from the fill's relative luminance instead.
+ */
+function readableTextColor(hex: string): string {
+  const c = hex.replace("#", "");
+  const rgb = [0, 2, 4].map((i) => {
+    const v = parseInt(c.slice(i, i + 2), 16) / 255;
+    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  });
+  const lum = 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
+  return lum > 0.18 ? "#0f172a" : "#ffffff";
+}
+
 export default function CapacityBar({ result }: { result: RaidResult }) {
   const segments: Segment[] = [
     { key: "usable", label: "Usable", tb: result.usableTb, color: "#2563eb" },
     { key: "parity", label: "Parity", tb: result.parityTb, color: "#f59e0b" },
-    { key: "mirror", label: "Mirror", tb: result.mirrorLossTb, color: "#ef4444" },
+    { key: "mirror", label: "Mirror", tb: result.mirrorLossTb, color: "#dc2626" },
     { key: "spare", label: "Hot spare", tb: result.hotSpareTb, color: "#94a3b8" },
   ].filter((s) => s.tb > 0);
 
@@ -51,8 +66,12 @@ export default function CapacityBar({ result }: { result: RaidResult }) {
           return (
             <div
               key={seg.key}
-              style={{ width: `${pct}%`, backgroundColor: seg.color }}
-              className="flex items-center justify-center text-xs font-medium text-white"
+              style={{
+                width: `${pct}%`,
+                backgroundColor: seg.color,
+                color: readableTextColor(seg.color),
+              }}
+              className="flex items-center justify-center text-xs font-medium"
               title={`${seg.label}: ${seg.tb.toFixed(2)} TB (${pct.toFixed(1)}%)`}
             >
               {pct >= 8 && <span>{pct.toFixed(0)}%</span>}

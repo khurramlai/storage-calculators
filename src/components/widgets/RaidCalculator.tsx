@@ -306,7 +306,7 @@ function PrimaryStat({ label, value, hint }: { label: string; value: string; hin
     <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-brand-200">
       <div className="text-sm text-brand-700">{label}</div>
       <div className="mt-1 font-mono text-3xl font-bold text-brand-900">{value}</div>
-      {hint && <div className="mt-1 text-xs text-slate-500">{hint}</div>}
+      {hint && <div className="mt-1 text-xs text-slate-600">{hint}</div>}
     </div>
   );
 }
@@ -318,7 +318,7 @@ function Row({ label, value, hint }: { label: string; value: string; hint?: stri
         <div className="text-sm text-brand-700">{label}</div>
         <div className="font-mono text-sm font-semibold text-slate-900">{value}</div>
       </div>
-      {hint && <div className="mt-1 text-xs text-slate-500">{hint}</div>}
+      {hint && <div className="mt-1 text-xs text-slate-600">{hint}</div>}
     </div>
   );
 }
