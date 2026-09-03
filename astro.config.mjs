@@ -16,15 +16,13 @@ export default defineConfig({
       // Legal pages are required-but-low-priority; we don't want them outranking
       // calculators for branded queries.
       serialize(item) {
-        const url = item.url;
+        // Compare on pathname, not the absolute URL, so these rules keep working
+        // if the site domain ever changes.
+        const { pathname } = new URL(item.url);
         const lastmod = new Date().toISOString();
 
-        if (url.endsWith("/")) {
-          // Strip trailing slash for comparison
-        }
-
         // Homepage: highest priority
-        if (url === "https://storage-calculators.pages.dev/") {
+        if (pathname === "/") {
           return {
             ...item,
             priority: 1.0,
@@ -35,10 +33,10 @@ export default defineConfig({
 
         // Legal pages: low priority, rarely change
         if (
-          url.includes("/privacy-policy") ||
-          url.includes("/cookie-policy") ||
-          url.includes("/terms-of-service") ||
-          url.includes("/disclaimer")
+          pathname.includes("/privacy-policy") ||
+          pathname.includes("/cookie-policy") ||
+          pathname.includes("/terms-of-service") ||
+          pathname.includes("/disclaimer")
         ) {
           return {
             ...item,
@@ -49,7 +47,7 @@ export default defineConfig({
         }
 
         // About page: middle priority
-        if (url.includes("/about")) {
+        if (pathname.includes("/about")) {
           return {
             ...item,
             priority: 0.6,
