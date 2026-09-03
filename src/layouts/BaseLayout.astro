@@ -44,6 +44,12 @@ const canonical = seo.canonical ?? new URL(Astro.url.pathname, Astro.site).toStr
     <link rel="manifest" href="/images/favicon_io/site.webmanifest" />
     <meta name="theme-color" content="#4f46e5" />
 
+    <script
+      is:inline
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4656233720271453"
+      crossorigin="anonymous"></script>
+
     {schemas.filter(Boolean).map((schema) => (
       <script
         type="application/ld+json"
