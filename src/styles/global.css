@@ -39,6 +39,34 @@ html {
   scroll-behavior: smooth;
 }
 
+/* RTL / Arabic
+ * ------------------------------------------------------------------------
+ * Inter is imported as the latin subset only, so Arabic text would otherwise
+ * land on whatever face the OS happens to pick. Name the good system Arabic
+ * fonts explicitly instead of shipping another webfont: zero extra bytes and
+ * far more predictable than the fallback lottery. */
+:lang(ar) {
+  --font-sans: "Segoe UI", Tahoma, "Geeza Pro", "Noto Sans Arabic",
+    "Noto Naskh Arabic", "Dubai", system-ui, sans-serif;
+  /* Arabic script needs more leading than Latin. Tailwind's text-* utilities
+   * set their own line-height, so this only affects unstyled prose. */
+  line-height: 1.85;
+}
+
+/* Measured values ("48.00 TB", "6.00×") are always digits plus a Latin unit,
+ * so they are pinned left-to-right and isolated from the surrounding RTL text.
+ * Formulas are NOT pinned: the Arabic pages write them with Arabic variable
+ * names, so they inherit RTL and are only isolated, which keeps them from
+ * disturbing the paragraph around them. */
+[dir="rtl"] .font-mono {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+[dir="rtl"] code {
+  unicode-bidi: isolate;
+}
+
 body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;

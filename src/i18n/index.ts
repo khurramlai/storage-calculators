@@ -3,6 +3,7 @@ import en, { type UIStrings } from "./ui/en";
 import fr from "./ui/fr";
 import es from "./ui/es";
 import de from "./ui/de";
+import ar from "./ui/ar";
 
 /**
  * UI dictionaries. A locale with no dictionary yet falls back to English so
@@ -14,7 +15,7 @@ const DICTS: Record<Locale, UIStrings> = {
   fr,
   es,
   de,
-  ar: en,
+  ar,
   ms: en,
   id: en,
   fil: en,
