@@ -21,7 +21,7 @@ export const LOCALES = [
 export type Locale = (typeof LOCALES)[number];
 
 /** Locales that actually ship translated content (built + linked + in sitemap). */
-export const ENABLED_LOCALES: readonly Locale[] = ["en", "fr"];
+export const ENABLED_LOCALES: readonly Locale[] = ["en", "fr", "es"];
 
 export interface LocaleMeta {
   code: Locale;
