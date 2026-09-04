@@ -20,6 +20,30 @@ export interface RaidInputs {
   hotSpares?: number;
 }
 
+/**
+ * Warnings are emitted as codes + params rather than English sentences so the
+ * widget can render them in the page's language. See `raidWarning` in the
+ * locale dictionaries for the message templates.
+ */
+export type RaidWarning =
+  | { code: "minDrives"; level: number; min: number }
+  | {
+      code: "afterSpares";
+      spares: number;
+      active: number;
+      level: number;
+      min: number;
+    }
+  | { code: "driveSize" }
+  | { code: "evenDrives"; lost: number }
+  | {
+      code: "groupsUneven";
+      level: number;
+      groups: number;
+      min: number;
+      active: number;
+    };
+
 export interface RaidResult {
   level: RaidLevel;
   driveCount: number;
@@ -44,18 +68,8 @@ export interface RaidResult {
 
   minDrives: number;
   valid: boolean;
-  warning?: string;
+  warning?: RaidWarning;
 }
-
-export const RAID_LABELS: Record<RaidLevel, string> = {
-  0: "RAID 0 (Striping)",
-  1: "RAID 1 (Mirror)",
-  5: "RAID 5 (Striping + Parity)",
-  6: "RAID 6 (Striping + Dual Parity)",
-  10: "RAID 10 (Mirror + Stripe)",
-  50: "RAID 50 (Striped RAID 5 Groups)",
-  60: "RAID 60 (Striped RAID 6 Groups)",
-};
 
 export const MIN_DRIVES: Record<RaidLevel, number> = {
   0: 2,
@@ -67,7 +81,12 @@ export const MIN_DRIVES: Record<RaidLevel, number> = {
   60: 8,
 };
 
-function emptyResult(level: RaidLevel, drives: number, hotSpares: number, warning: string): RaidResult {
+function emptyResult(
+  level: RaidLevel,
+  drives: number,
+  hotSpares: number,
+  warning: RaidWarning
+): RaidResult {
   return {
     level,
     driveCount: drives,
@@ -104,25 +123,30 @@ export function calculateRaid(input: RaidInputs): RaidResult {
 
   if (drives < minDrives) {
     return {
-      ...emptyResult(level, drives, hotSpares, `RAID ${level} requires at least ${minDrives} drives.`),
+      ...emptyResult(level, drives, hotSpares, {
+        code: "minDrives",
+        level,
+        min: minDrives,
+      }),
       rawTb,
       hotSpareTb,
     };
   }
   if (active < minDrives) {
     return {
-      ...emptyResult(
+      ...emptyResult(level, drives, hotSpares, {
+        code: "afterSpares",
+        spares: hotSpares,
+        active,
         level,
-        drives,
-        hotSpares,
-        `After ${hotSpares} hot spare${hotSpares === 1 ? "" : "s"}, only ${active} active drive${active === 1 ? "" : "s"} remain, RAID ${level} needs at least ${minDrives}.`
-      ),
+        min: minDrives,
+      }),
       rawTb,
       hotSpareTb,
     };
   }
   if (driveSizeTb <= 0) {
-    return emptyResult(level, drives, hotSpares, "Enter a drive size greater than 0.");
+    return emptyResult(level, drives, hotSpares, { code: "driveSize" });
   }
 
   const out: RaidResult = {
@@ -197,7 +221,7 @@ export function calculateRaid(input: RaidInputs): RaidResult {
       out.readMultiplier = pairs * 2;
       out.writeMultiplier = pairs;
       if (lost > 0) {
-        out.warning = `RAID 10 requires an even number of active drives, ${lost} drive${lost === 1 ? "" : "s"} unused.`;
+        out.warning = { code: "evenDrives", lost };
       }
       break;
     }
@@ -205,12 +229,13 @@ export function calculateRaid(input: RaidInputs): RaidResult {
       const groups = Math.max(2, Math.floor(input.groups ?? 2));
       if (active % groups !== 0 || active / groups < 3) {
         return {
-          ...emptyResult(
+          ...emptyResult(level, drives, hotSpares, {
+            code: "groupsUneven",
             level,
-            drives,
-            hotSpares,
-            `RAID 50 needs ${groups} equal groups of at least 3 drives. ${active} active drives ÷ ${groups} groups doesn't divide evenly into RAID 5 sets.`
-          ),
+            groups,
+            min: 3,
+            active,
+          }),
           rawTb,
           hotSpareTb,
         };
@@ -230,12 +255,13 @@ export function calculateRaid(input: RaidInputs): RaidResult {
       const groups = Math.max(2, Math.floor(input.groups ?? 2));
       if (active % groups !== 0 || active / groups < 4) {
         return {
-          ...emptyResult(
+          ...emptyResult(level, drives, hotSpares, {
+            code: "groupsUneven",
             level,
-            drives,
-            hotSpares,
-            `RAID 60 needs ${groups} equal groups of at least 4 drives. ${active} active drives ÷ ${groups} groups doesn't divide evenly into RAID 6 sets.`
-          ),
+            groups,
+            min: 4,
+            active,
+          }),
           rawTb,
           hotSpareTb,
         };

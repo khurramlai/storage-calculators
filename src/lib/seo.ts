@@ -1,9 +1,11 @@
 import type { CalculatorConfig } from "./types";
+import { SITE_NAME, SITE_TAGLINE, SITE_URL } from "./site";
+import { DEFAULT_LOCALE, type Locale } from "~/i18n/config";
+import { strings } from "~/i18n";
+import { canonical, homeHref, calculatorHref } from "~/i18n/routing";
+import type { StaticPageKey } from "~/i18n/types";
 
-export const SITE_NAME = "Storage Calculators";
-export const SITE_URL = "https://storagecalculators.com";
-export const SITE_TAGLINE =
-  "Free calculators for RAID, NAS, CCTV, cloud storage, and self-storage needs.";
+export { SITE_NAME, SITE_TAGLINE, SITE_URL };
 
 export interface SeoMeta {
   title: string;
@@ -12,20 +14,44 @@ export interface SeoMeta {
   keywords?: string[];
 }
 
-export function siteSeo(): SeoMeta {
+export function siteSeo(locale: Locale = DEFAULT_LOCALE): SeoMeta {
+  const s = strings(locale);
   return {
-    title: `${SITE_NAME}: ${SITE_TAGLINE}`,
-    description: SITE_TAGLINE,
-    canonical: SITE_URL,
+    title: `${s.site.name}: ${s.site.tagline}`,
+    description: s.site.tagline,
+    canonical: canonical(locale, { kind: "home" }),
   };
 }
 
-export function calculatorSeo(calc: CalculatorConfig): SeoMeta {
+/**
+ * `calc` carries the ENGLISH slug as its identity; the localized URL is
+ * resolved through the routing helpers so the canonical always matches the
+ * page that actually gets built.
+ */
+export function calculatorSeo(
+  calc: CalculatorConfig,
+  locale: Locale = DEFAULT_LOCALE
+): SeoMeta {
+  const s = strings(locale);
   return {
-    title: `${calc.title} | ${SITE_NAME}`,
+    title: `${calc.title} | ${s.site.name}`,
     description: calc.description,
-    canonical: `${SITE_URL}/${calc.slug}/`,
+    canonical: canonical(locale, { kind: "calculator", slug: calc.slug }),
     keywords: calc.keywords,
+  };
+}
+
+export function staticPageSeo(
+  key: StaticPageKey,
+  title: string,
+  description: string,
+  locale: Locale = DEFAULT_LOCALE
+): SeoMeta {
+  const s = strings(locale);
+  return {
+    title: `${title} | ${s.site.name}`,
+    description,
+    canonical: canonical(locale, { kind: "static", key }),
   };
 }
 
@@ -34,13 +60,17 @@ export function calculatorSeo(calc: CalculatorConfig): SeoMeta {
  * interactive calculator tool, not just an article. Combined with FAQPage
  * schema, this is the foundation for rich results.
  */
-export function webAppSchema(calc: CalculatorConfig) {
+export function webAppSchema(
+  calc: CalculatorConfig,
+  locale: Locale = DEFAULT_LOCALE
+) {
   return {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     name: calc.title,
     description: calc.description,
-    url: `${SITE_URL}/${calc.slug}/`,
+    url: new URL(calculatorHref(locale, calc.slug), SITE_URL).toString(),
+    inLanguage: locale,
     applicationCategory: "UtilitiesApplication",
     operatingSystem: "Any",
     browserRequirements: "Requires JavaScript",
@@ -68,7 +98,11 @@ export function faqSchema(calc: CalculatorConfig) {
   };
 }
 
-export function breadcrumbSchema(calc: CalculatorConfig) {
+export function breadcrumbSchema(
+  calc: CalculatorConfig,
+  locale: Locale = DEFAULT_LOCALE
+) {
+  const s = strings(locale);
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -76,14 +110,14 @@ export function breadcrumbSchema(calc: CalculatorConfig) {
       {
         "@type": "ListItem",
         position: 1,
-        name: "Home",
-        item: SITE_URL,
+        name: s.common.home,
+        item: new URL(homeHref(locale), SITE_URL).toString(),
       },
       {
         "@type": "ListItem",
         position: 2,
         name: calc.title,
-        item: `${SITE_URL}/${calc.slug}/`,
+        item: new URL(calculatorHref(locale, calc.slug), SITE_URL).toString(),
       },
     ],
   };

@@ -3,13 +3,18 @@
  * Calculate scrolls to the results panel and triggers a brief highlight.
  * Reset restores all inputs to their config-defined defaults.
  */
+import type { WidgetStrings } from "~/i18n/widget-strings";
+
 export default function ActionBar({
   onCalculate,
   onReset,
+  strings,
 }: {
   onCalculate: () => void;
   onReset: () => void;
+  strings: WidgetStrings;
 }) {
+  const t = strings.widget;
   return (
     <div className="mt-6 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-5">
       <button
@@ -24,7 +29,7 @@ export default function ActionBar({
             clipRule="evenodd"
           />
         </svg>
-        Calculate
+        {t.calculate}
       </button>
       <button
         type="button"
@@ -38,9 +43,9 @@ export default function ActionBar({
             clipRule="evenodd"
           />
         </svg>
-        Reset
+        {t.reset}
       </button>
-      <span className="ml-auto text-xs text-slate-500">Results update live as you type.</span>
+      <span className="ms-auto text-xs text-slate-500">{t.liveHint}</span>
     </div>
   );
 }

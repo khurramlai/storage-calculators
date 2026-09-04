@@ -1,0 +1,63 @@
+---
+/**
+ * Every non-home page for a prefixed locale: calculators and the static
+ * (about + legal) pages share this route so /fr/<slug>/ resolves whichever
+ * kind of page owns that localized slug.
+ */
+import CalculatorPage from "~/components/pages/CalculatorPage.astro";
+import StaticPage from "~/components/pages/StaticPage.astro";
+import { getLocalizedCalculators, type LocalizedCalculator } from "~/lib/localized";
+import { ENABLED_LOCALES, DEFAULT_LOCALE, type Locale } from "~/i18n/config";
+import { getStaticPages } from "~/i18n/static-pages";
+import { STATIC_PAGE_KEYS, type StaticPageKey, type StaticPageTranslation } from "~/i18n/types";
+
+export async function getStaticPaths() {
+  const paths = [];
+
+  for (const locale of ENABLED_LOCALES) {
+    if (locale === DEFAULT_LOCALE) continue;
+
+    for (const calc of getLocalizedCalculators(locale)) {
+      paths.push({
+        params: { locale, slug: calc.localizedSlug },
+        props: { locale, kind: "calculator" as const, calc },
+      });
+    }
+
+    const pages = getStaticPages(locale);
+    if (!pages) continue;
+    for (const key of STATIC_PAGE_KEYS) {
+      const page = pages[key];
+      if (!page) continue;
+      paths.push({
+        params: { locale, slug: page.slug },
+        props: { locale, kind: "static" as const, pageKey: key, page },
+      });
+    }
+  }
+
+  return paths;
+}
+
+type CalculatorProps = {
+  locale: Locale;
+  kind: "calculator";
+  calc: LocalizedCalculator;
+};
+type StaticProps = {
+  locale: Locale;
+  kind: "static";
+  pageKey: StaticPageKey;
+  page: StaticPageTranslation;
+};
+
+const props = Astro.props as CalculatorProps | StaticProps;
+---
+
+{
+  props.kind === "calculator" ? (
+    <CalculatorPage calc={props.calc} locale={props.locale} />
+  ) : (
+    <StaticPage page={props.page} pageKey={props.pageKey} locale={props.locale} />
+  )
+}

@@ -1,6 +1,8 @@
 ---
 import LegalLayout from "~/layouts/LegalLayout.astro";
 import { SITE_NAME, SITE_URL } from "~/lib/seo";
+import type { PageRef } from "~/i18n/routing";
+import { DEFAULT_LOCALE } from "~/i18n/config";
 import { getAllCalculators } from "~/lib/registry";
 
 const all = getAllCalculators();
@@ -11,10 +13,14 @@ const seo = {
     "About StorageCalc: why this independent calculator site exists, who runs it, how the math is sourced from vendor docs, and how to get in touch.",
   canonical: `${SITE_URL}/about/`,
 };
+
+const pageRef: PageRef = { kind: "static", key: "about" };
 ---
 
 <LegalLayout
   seo={seo}
+  locale={DEFAULT_LOCALE}
+  pageRef={pageRef}
   title="About StorageCalc"
   subtitle="An independent, free collection of storage calculators, built because vendor calculators were hiding the math."
 >

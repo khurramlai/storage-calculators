@@ -1,18 +1,29 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
 import type { SeoMeta } from "~/lib/seo";
+import { DEFAULT_LOCALE, type Locale } from "~/i18n/config";
+import type { PageRef } from "~/i18n/routing";
 
 interface Props {
   seo: SeoMeta;
   title: string;
   subtitle?: string;
   updated?: string;
+  locale?: Locale;
+  pageRef?: PageRef;
 }
 
-const { seo, title, subtitle, updated } = Astro.props;
+const {
+  seo,
+  title,
+  subtitle,
+  updated,
+  locale = DEFAULT_LOCALE,
+  pageRef,
+} = Astro.props;
 ---
 
-<BaseLayout seo={seo}>
+<BaseLayout seo={seo} locale={locale} pageRef={pageRef}>
   <section class="gradient-hero border-b border-slate-100">
     <div class="container-default py-12 sm:py-16">
       <span class="eyebrow"><span class="eyebrow-dot"></span>Legal</span>

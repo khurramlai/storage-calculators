@@ -1,0 +1,344 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import CalculatorCard from "~/components/CalculatorCard.astro";
+import CategoryIcon from "~/components/CategoryIcon.astro";
+import {
+  getLocalizedCalculators,
+  getLocalizedByCategory,
+  getLocalizedCalculator,
+} from "~/lib/localized";
+import { siteSeo } from "~/lib/seo";
+import { strings, fmt, plural } from "~/i18n";
+import { calculatorHref, type PageRef } from "~/i18n/routing";
+import type { Locale } from "~/i18n/config";
+import type { CalculatorCategory } from "~/lib/types";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const s = strings(locale);
+const all = getLocalizedCalculators(locale);
+const seo = siteSeo(locale);
+const pageRef: PageRef = { kind: "home" };
+
+const CATEGORY_KEYS: CalculatorCategory[] = [
+  "raid",
+  "surveillance",
+  "nas",
+  "cloud",
+  "self-storage",
+  "specialty",
+];
+
+const categoriesWithData = CATEGORY_KEYS.map((key) => ({
+  key,
+  label: s.category[key],
+  count: getLocalizedByCategory(locale, key).length,
+})).filter((c) => c.count > 0);
+
+const featuredSlugs = [
+  "raid-storage-calculator",
+  "cctv-storage-calculator",
+  "s3-storage-calculator",
+  "nvr-storage-calculator",
+  "azure-storage-calculator",
+  "hikvision-storage-calculator",
+];
+const featured = featuredSlugs
+  .map((slug) => getLocalizedCalculator(locale, slug))
+  .filter((c): c is NonNullable<typeof c> => Boolean(c));
+
+const stats = [
+  { value: `${all.length}+`, label: s.home.statCalculators },
+  { value: `${categoriesWithData.length}`, label: s.home.statCategories },
+  { value: s.home.statFreeValue, label: s.home.statFree },
+  { value: s.home.statNoSignupValue, label: s.home.statNoSignup },
+];
+
+const features = [
+  {
+    icon: "✓",
+    accent: "bg-emerald-50 text-emerald-600 ring-emerald-100",
+    title: s.home.feature1Title,
+    body: s.home.feature1Body,
+  },
+  {
+    icon: "★",
+    accent: "bg-amber-50 text-amber-600 ring-amber-100",
+    title: s.home.feature2Title,
+    body: s.home.feature2Body,
+  },
+  {
+    icon: "⚡",
+    accent: "bg-brand-50 text-brand-600 ring-brand-100",
+    title: s.home.feature3Title,
+    body: s.home.feature3Body,
+  },
+  {
+    icon: "🔒",
+    accent: "bg-violet-50 text-violet-600 ring-violet-100",
+    title: s.home.feature4Title,
+    body: s.home.feature4Body,
+  },
+  {
+    icon: "↻",
+    accent: "bg-sky-50 text-sky-600 ring-sky-100",
+    title: s.home.feature5Title,
+    body: s.home.feature5Body,
+  },
+  {
+    icon: "❖",
+    accent: "bg-pink-50 text-pink-600 ring-pink-100",
+    title: s.home.feature6Title,
+    body: s.home.feature6Body,
+  },
+];
+
+const raidHref = calculatorHref(locale, "raid-storage-calculator");
+---
+
+<BaseLayout seo={seo} locale={locale} pageRef={pageRef}>
+  <!-- HERO -->
+  <section class="gradient-hero relative overflow-hidden">
+    <!-- Decorative gradient blobs -->
+    <div class="pointer-events-none absolute -top-32 -right-24 h-96 w-96 rounded-full bg-gradient-to-br from-violet-200/70 to-pink-200/40 blur-3xl" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute -bottom-40 -left-24 h-96 w-96 rounded-full bg-gradient-to-br from-brand-200/60 to-sky-200/30 blur-3xl" aria-hidden="true"></div>
+
+    <div class="container-wide relative py-20 sm:py-28">
+      <div class="grid items-center gap-12 lg:grid-cols-12">
+        <div class="lg:col-span-7">
+          <span class="eyebrow">
+            <span class="eyebrow-dot"></span>
+            {fmt(s.home.heroEyebrow, { count: all.length })}
+          </span>
+          <h1 class="mt-5 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+            {s.home.heroTitleLead} <span class="gradient-text">{s.home.heroTitleAccent}</span>.
+          </h1>
+          <p class="mt-5 max-w-xl text-lg text-slate-600">
+            {s.home.heroSubtitle}
+          </p>
+          <div class="mt-7 flex flex-wrap items-center gap-3">
+            <a href={raidHref} class="btn-primary">
+              {s.home.heroCtaPrimary}
+              <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 rtl:-scale-x-100"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd" /></svg>
+            </a>
+            <a href="#all" class="btn-secondary">{s.home.heroCtaSecondary}</a>
+          </div>
+          <div class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {
+              stats.map((stat) => (
+                <div>
+                  <div class="font-mono text-2xl font-bold text-slate-900 sm:text-3xl">{stat.value}</div>
+                  <div class="text-xs uppercase tracking-wide text-slate-500">{stat.label}</div>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        <!-- Visual preview card -->
+        <div class="lg:col-span-5">
+          <div class="relative">
+            <div class="absolute -inset-6 rounded-3xl bg-gradient-to-br from-brand-400/20 via-violet-400/15 to-pink-400/20 blur-2xl" aria-hidden="true"></div>
+            <div class="relative rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl shadow-brand-900/10">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="h-2.5 w-2.5 rounded-full bg-red-400"></span>
+                  <span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span>
+                  <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+                </div>
+                <span class="font-mono text-xs text-slate-400" dir="ltr">/raid-storage-calculator</span>
+              </div>
+              <div class="mt-5">
+                <div class="text-xs uppercase tracking-wide text-brand-600">RAID 6, 8 × 8 TB</div>
+                <div class="mt-1 font-mono text-4xl font-bold text-slate-900">48.00 TB</div>
+                <div class="text-xs text-slate-500">{s.home.previewCaption}</div>
+              </div>
+              <div class="mt-5 space-y-2">
+                <div class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-xs">
+                  <span class="text-slate-600">{s.home.previewReadSpeed}</span>
+                  <span class="font-mono font-semibold text-slate-900">6.00×</span>
+                </div>
+                <div class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-xs">
+                  <span class="text-slate-600">{s.home.previewWriteSpeed}</span>
+                  <span class="font-mono font-semibold text-slate-900">1.00×</span>
+                </div>
+                <div class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-xs">
+                  <span class="text-slate-600">{s.home.previewEfficiency}</span>
+                  <span class="font-mono font-semibold text-slate-900">75.0%</span>
+                </div>
+              </div>
+              <div class="mt-5 flex h-3 w-full overflow-hidden rounded-full ring-1 ring-slate-200">
+                <div class="flex-1 bg-brand-600" style="flex: 6"></div>
+                <div class="bg-amber-500" style="flex: 2"></div>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-slate-500">
+                <span>{s.home.previewUsable}</span>
+                <span>{s.home.previewParity}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <section class="border-y border-slate-100 bg-white">
+    <div class="container-wide py-6">
+      <p class="text-center text-xs font-semibold uppercase tracking-wider text-slate-400">
+        {s.home.trustStrip}
+      </p>
+      <ul class="mt-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm font-semibold text-slate-500">
+        <li>Hikvision</li>
+        <li class="text-slate-300">·</li>
+        <li>Hanwha Wisenet</li>
+        <li class="text-slate-300">·</li>
+        <li>Axis</li>
+        <li class="text-slate-300">·</li>
+        <li>UniFi Protect</li>
+        <li class="text-slate-300">·</li>
+        <li>AWS S3</li>
+        <li class="text-slate-300">·</li>
+        <li>Azure Blob</li>
+        <li class="text-slate-300">·</li>
+        <li>Google Cloud Storage</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="container-wide py-20">
+    <div class="mx-auto max-w-2xl text-center">
+      <span class="eyebrow"><span class="eyebrow-dot"></span>{s.home.categoriesEyebrow}</span>
+      <h2 class="mt-4 text-3xl font-bold text-slate-900 sm:text-4xl">{s.home.categoriesTitle}</h2>
+      <p class="mt-3 text-slate-600">{s.home.categoriesSubtitle}</p>
+    </div>
+    <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        categoriesWithData.map(({ key, label, count }) => (
+          <a
+            href={`#${key}`}
+            class="card card-hover group flex items-start gap-4 p-5"
+          >
+            <span class={`accent-${key} inline-flex h-12 w-12 items-center justify-center rounded-2xl ring-1`}>
+              <CategoryIcon category={key} class="h-6 w-6" />
+            </span>
+            <div class="flex-1">
+              <h3 class="text-base font-semibold text-slate-900 group-hover:text-brand-700">{label}</h3>
+              <p class="mt-0.5 text-sm text-slate-500">
+                {plural(count, s.common.calculatorCount, s.common.calculatorCountPlural)}
+              </p>
+            </div>
+            <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-brand-600 rtl:-scale-x-100">
+              <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd" />
+            </svg>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- FEATURED -->
+  {
+    featured.length > 0 && (
+      <section class="bg-white py-20">
+        <div class="container-wide">
+          <div class="mb-10 flex items-end justify-between gap-6">
+            <div>
+              <span class="eyebrow"><span class="eyebrow-dot"></span>{s.home.featuredEyebrow}</span>
+              <h2 class="mt-4 text-3xl font-bold text-slate-900 sm:text-4xl">{s.home.featuredTitle}</h2>
+            </div>
+            <a href="#all" class="btn-ghost hidden sm:inline-flex">
+              {s.home.featuredSeeAll}
+              <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 rtl:-scale-x-100"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd" /></svg>
+            </a>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {featured.map((c) => <CalculatorCard calc={c} locale={locale} />)}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- FEATURES / WHY -->
+  <section class="container-wide py-20">
+    <div class="mx-auto max-w-2xl text-center">
+      <span class="eyebrow"><span class="eyebrow-dot"></span>{s.home.whyEyebrow}</span>
+      <h2 class="mt-4 text-3xl font-bold text-slate-900 sm:text-4xl">{s.home.whyTitle}</h2>
+      <p class="mt-3 text-slate-600">{s.home.whySubtitle}</p>
+    </div>
+    <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        features.map((f) => (
+          <div class="card p-6">
+            <span class={`inline-flex h-10 w-10 items-center justify-center rounded-xl text-lg font-bold ring-1 ${f.accent}`}>
+              {f.icon}
+            </span>
+            <h3 class="mt-4 text-base font-semibold text-slate-900">{f.title}</h3>
+            <p class="mt-1 text-sm text-slate-600">{f.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ALL CALCULATORS -->
+  <section id="all" class="bg-white py-20">
+    <div class="container-wide">
+      <div class="mb-10 max-w-2xl">
+        <span class="eyebrow"><span class="eyebrow-dot"></span>{s.home.allEyebrow}</span>
+        <h2 class="mt-4 text-3xl font-bold text-slate-900 sm:text-4xl">{s.home.allTitle}</h2>
+        <p class="mt-3 text-slate-600">{s.home.allSubtitle}</p>
+      </div>
+      {
+        all.length === 0 ? (
+          <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-12 text-center text-slate-500">
+            <p class="text-lg font-medium text-slate-700">{s.home.allEmpty}</p>
+          </div>
+        ) : (
+          categoriesWithData.map(({ key, label }) => {
+            const list = getLocalizedByCategory(locale, key);
+            return (
+              <section id={key} class="mb-14 scroll-mt-24">
+                <div class="mb-5 flex items-center gap-3">
+                  <span class={`accent-${key} inline-flex h-9 w-9 items-center justify-center rounded-xl ring-1`}>
+                    <CategoryIcon category={key} class="h-4 w-4" />
+                  </span>
+                  <h3 class="text-xl font-bold text-slate-900">{label}</h3>
+                  <span class="text-sm text-slate-400">· {plural(list.length, s.common.calculatorCount, s.common.calculatorCountPlural)}</span>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {list.map((calc) => <CalculatorCard calc={calc} locale={locale} />)}
+                </div>
+              </section>
+            );
+          })
+        )
+      }
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="container-wide pb-20">
+    <div class="relative overflow-hidden rounded-3xl gradient-cta p-10 text-white shadow-2xl shadow-brand-700/20 sm:p-14">
+      <div class="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" aria-hidden="true"></div>
+      <div class="pointer-events-none absolute -left-24 -bottom-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" aria-hidden="true"></div>
+      <div class="relative max-w-2xl">
+        <h2 class="text-3xl font-bold sm:text-4xl">{s.home.ctaTitle}</h2>
+        <p class="mt-3 text-white/85">{s.home.ctaBody}</p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href={raidHref} class="inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-brand-700 shadow-sm transition hover:bg-slate-50">
+            {s.home.ctaPrimary}
+          </a>
+          <a href="#all" class="inline-flex items-center justify-center gap-2 rounded-full border border-white/30 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">
+            {s.home.ctaSecondary}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

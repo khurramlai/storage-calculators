@@ -2,10 +2,12 @@ import { useId, useMemo, useRef, useState } from "react";
 import type { CalculatorConfig } from "~/lib/types";
 import {
   calculateRaid,
-  RAID_LABELS,
   RAID_LEVELS,
   type RaidLevel,
+  type RaidWarning,
 } from "~/lib/raid";
+import type { WidgetStrings } from "~/i18n/widget-strings";
+import { fmt, plural } from "~/i18n/format";
 import ActionBar from "./parts/ActionBar";
 import CapacityBar from "./parts/CapacityBar";
 
@@ -46,7 +48,16 @@ function fmtPercent(n: number): string {
   return `${(n * 100).toFixed(1)}%`;
 }
 
-export default function RaidCalculator({ config }: { config: CalculatorConfig }) {
+export default function RaidCalculator({
+  config,
+  strings,
+}: {
+  config: CalculatorConfig;
+  strings: WidgetStrings;
+}) {
+  const t = strings.widget;
+  const levels = strings.raidLevels!;
+  const warnings = strings.raidWarning!;
   const props = (config.widgetProps ?? {}) as RaidWidgetProps;
   const lockedLevel = props.lockedLevel;
 
@@ -87,6 +98,31 @@ export default function RaidCalculator({ config }: { config: CalculatorConfig })
   const driveSizeTb = toTb(driveSize, unit);
   const showGroups = level === 50 || level === 60;
 
+  const warningText = (w: RaidWarning): string => {
+    switch (w.code) {
+      case "minDrives":
+        return fmt(warnings.minDrives, { level: w.level, min: w.min });
+      case "afterSpares":
+        return fmt(warnings.afterSpares, {
+          spares: w.spares,
+          active: w.active,
+          level: w.level,
+          min: w.min,
+        });
+      case "driveSize":
+        return warnings.driveSize;
+      case "evenDrives":
+        return fmt(warnings.evenDrives, { lost: w.lost });
+      case "groupsUneven":
+        return fmt(warnings.groupsUneven, {
+          level: w.level,
+          groups: w.groups,
+          min: w.min,
+          active: w.active,
+        });
+    }
+  };
+
   const result = useMemo(
     () =>
       calculateRaid({
@@ -104,10 +140,10 @@ export default function RaidCalculator({ config }: { config: CalculatorConfig })
       <div className="grid gap-6 lg:grid-cols-5">
         <div className="lg:col-span-3">
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-lg font-semibold text-slate-900">Inputs</h2>
+            <h2 className="mb-4 text-lg font-semibold text-slate-900">{t.inputs}</h2>
             <div className="grid grid-cols-12 gap-4">
               {!lockedLevel && (
-                <Field label="RAID level" cols={12}>
+                <Field label={t.raidLevel} cols={12}>
                   {({ fieldId }) => (
                     <select
                       id={fieldId}
@@ -117,7 +153,7 @@ export default function RaidCalculator({ config }: { config: CalculatorConfig })
                     >
                       {RAID_LEVELS.map((l) => (
                         <option key={l} value={l}>
-                          {RAID_LABELS[l]}
+                          {levels[String(l) as keyof typeof levels]}
                         </option>
                       ))}
                     </select>
@@ -125,7 +161,7 @@ export default function RaidCalculator({ config }: { config: CalculatorConfig })
                 </Field>
               )}
 
-              <Field label="Number of drives" cols={6} help={`Minimum: ${result.minDrives}`}>
+              <Field label={t.driveCount} cols={6} help={fmt(t.minimum, { n: result.minDrives })}>
                 {({ fieldId, helpId }) => (
                   <input
                     id={fieldId}
@@ -141,7 +177,7 @@ export default function RaidCalculator({ config }: { config: CalculatorConfig })
                 )}
               </Field>
 
-              <Field label="Drive size" cols={6}>
+              <Field label={t.driveSize} cols={6}>
                 {({ fieldId }) => (
                   <div className="flex gap-2">
                     <input
@@ -157,7 +193,7 @@ export default function RaidCalculator({ config }: { config: CalculatorConfig })
                       value={unit}
                       onChange={(e) => setUnit(e.target.value as Unit)}
                       className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
-                      aria-label="Drive size unit"
+                      aria-label={t.driveSizeUnit}
                     >
                       <option value="TB">TB</option>
                       <option value="GB">GB</option>
@@ -166,7 +202,7 @@ export default function RaidCalculator({ config }: { config: CalculatorConfig })
                 )}
               </Field>
 
-              <Field label="Hot spares" cols={6} help="Idle drives reserved for automatic rebuild.">
+              <Field label={t.hotSpares} cols={6} help={t.hotSparesHelp}>
                 {({ fieldId, helpId }) => (
                   <input
                     id={fieldId}
@@ -183,7 +219,7 @@ export default function RaidCalculator({ config }: { config: CalculatorConfig })
               </Field>
 
               {showGroups && (
-                <Field label="Stripe groups" cols={6} help={`RAID ${level} stripes across multiple groups.`}>
+                <Field label={t.stripeGroups} cols={6} help={fmt(t.stripeGroupsHelp, { level })}>
                   {({ fieldId, helpId }) => (
                     <input
                       id={fieldId}
@@ -206,11 +242,11 @@ export default function RaidCalculator({ config }: { config: CalculatorConfig })
                 role="alert"
                 className="mt-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900"
               >
-                {result.warning}
+                {warningText(result.warning)}
               </div>
             )}
 
-            <ActionBar onCalculate={handleCalculate} onReset={handleReset} />
+            <ActionBar onCalculate={handleCalculate} onReset={handleReset} strings={strings} />
           </div>
         </div>
 
@@ -221,47 +257,57 @@ export default function RaidCalculator({ config }: { config: CalculatorConfig })
               highlight ? "ring-4 ring-brand-300" : ""
             }`}
             role="region"
-            aria-label="Calculation results"
+            aria-label={t.resultsRegion}
             aria-live="polite"
           >
-            <h2 className="mb-2 text-lg font-semibold text-brand-900">Results</h2>
+            <h2 className="mb-2 text-lg font-semibold text-brand-900">{t.results}</h2>
 
             <PrimaryStat
-              label="Usable capacity"
+              label={t.usableCapacity}
               value={fmtTb(result.usableTb)}
-              hint={`${fmtPercent(result.efficiency)} of raw capacity`}
+              hint={fmt(t.usableOfRaw, { percent: fmtPercent(result.efficiency) })}
             />
 
-            <Row label="Raw capacity" value={fmtTb(result.rawTb)} />
+            <Row label={t.rawCapacity} value={fmtTb(result.rawTb)} />
             <Row
-              label="Fault tolerance"
+              label={t.faultTolerance}
               value={
                 result.faultToleranceBestCase > result.faultTolerance
-                  ? `${result.faultTolerance}-${result.faultToleranceBestCase} drives`
-                  : `${result.faultTolerance} drive${result.faultTolerance === 1 ? "" : "s"}`
+                  ? fmt(t.faultToleranceRange, {
+                      min: result.faultTolerance,
+                      max: result.faultToleranceBestCase,
+                    })
+                  : plural(
+                      result.faultTolerance,
+                      t.driveFailures,
+                      t.driveFailuresPlural
+                    )
               }
               hint={
                 result.faultToleranceBestCase > result.faultTolerance
-                  ? "Min (worst case) – max (best case) drive failures survivable."
+                  ? t.faultToleranceHint
                   : undefined
               }
             />
-            <Row label="Read speed" value={fmtMultiplier(result.readMultiplier)} hint="vs. one drive" />
-            <Row label="Write speed" value={fmtMultiplier(result.writeMultiplier)} hint="vs. one drive" />
+            <Row label={t.readSpeed} value={fmtMultiplier(result.readMultiplier)} hint={t.vsOneDrive} />
+            <Row label={t.writeSpeed} value={fmtMultiplier(result.writeMultiplier)} hint={t.vsOneDrive} />
             {result.hotSpareTb > 0 && (
-              <Row label="Hot spare reserve" value={fmtTb(result.hotSpareTb)} />
+              <Row label={t.hotSpareReserve} value={fmtTb(result.hotSpareTb)} />
             )}
             {(result.level === 50 || result.level === 60) && (
               <Row
-                label="Array layout"
-                value={`${result.groups} × ${result.drivesPerGroup} drives`}
+                label={t.arrayLayout}
+                value={fmt(t.arrayLayoutValue, {
+                  groups: result.groups,
+                  perGroup: result.drivesPerGroup,
+                })}
               />
             )}
           </div>
         </div>
       </div>
 
-      <CapacityBar result={result} />
+      <CapacityBar result={result} strings={strings} />
     </div>
   );
 }

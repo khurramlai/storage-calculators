@@ -10,14 +10,19 @@
  *   3. Done. Submissions arrive at the email tied to that key.
  */
 
+import { DEFAULT_LOCALE, type Locale } from "~/i18n/config";
+import { strings, fmt } from "~/i18n";
+
 interface Props {
   /** Calculator title, used as the email subject prefix */
   calculatorTitle: string;
   /** Calculator slug, included in the submission for context */
   calculatorSlug: string;
+  locale?: Locale;
 }
 
-const { calculatorTitle, calculatorSlug } = Astro.props;
+const { calculatorTitle, calculatorSlug, locale = DEFAULT_LOCALE } = Astro.props;
+const s = strings(locale);
 const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? "";
 const isConfigured = accessKey && accessKey !== "YOUR_WEB3FORMS_ACCESS_KEY_HERE";
 ---
@@ -38,18 +43,18 @@ const isConfigured = accessKey && accessKey !== "YOUR_WEB3FORMS_ACCESS_KEY_HERE"
       </span>
       <div class="min-w-0 flex-1">
         <h2 id="feedback-heading" class="text-lg font-semibold text-slate-900">
-          Spot an error? Have feedback?
+          {s.feedback.heading}
         </h2>
         <p class="mt-1 text-sm text-slate-600">
-          Tell us what's wrong with the math, what's missing, or what would make this calculator better. We read everything.
+          {s.feedback.subheading}
         </p>
       </div>
       <span
         class="ml-auto inline-flex h-9 items-center gap-1 rounded-full bg-white px-3 text-sm font-semibold text-amber-800 ring-1 ring-amber-200 transition group-open:bg-amber-100"
         aria-hidden="true"
       >
-        <span class="group-open:hidden">Open form</span>
-        <span class="hidden group-open:inline">Close</span>
+        <span class="group-open:hidden">{s.feedback.openForm}</span>
+        <span class="hidden group-open:inline">{s.feedback.close}</span>
         <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 transition group-open:rotate-180">
           <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.38a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
         </svg>
@@ -60,13 +65,17 @@ const isConfigured = accessKey && accessKey !== "YOUR_WEB3FORMS_ACCESS_KEY_HERE"
       {
         !isConfigured ? (
           <div role="alert" class="rounded-xl border border-amber-300 bg-amber-100 px-4 py-3 text-sm text-amber-900">
-            <strong>Form not configured yet.</strong> The site owner needs to add a
-            Web3Forms access key to <code class="rounded bg-white px-1.5 py-0.5 font-mono text-xs">.env</code> as <code class="rounded bg-white px-1.5 py-0.5 font-mono text-xs">PUBLIC_WEB3FORMS_KEY</code>.
+            <strong>{s.feedback.notConfiguredStrong}</strong> {fmt(s.feedback.notConfiguredBody, { env: ".env", key: "PUBLIC_WEB3FORMS_KEY" })}
             Free at <a href="https://web3forms.com" class="underline" rel="noopener noreferrer" target="_blank">web3forms.com</a>.
           </div>
         ) : (
           <form
             data-feedback-form
+            data-i18n-submit={s.feedback.submit}
+            data-i18n-submitting={s.feedback.submitting}
+            data-i18n-error={s.feedback.errorBody}
+            data-i18n-success-strong={s.feedback.successStrong}
+            data-i18n-success-body={s.feedback.successBody}
             class="space-y-4"
             action="https://api.web3forms.com/submit"
             method="POST"
@@ -87,7 +96,7 @@ const isConfigured = accessKey && accessKey !== "YOUR_WEB3FORMS_ACCESS_KEY_HERE"
             <div class="grid gap-4 sm:grid-cols-2">
               <div>
                 <label for="feedback-type" class="mb-1 block text-sm font-medium text-slate-800">
-                  Type of feedback
+                  {s.feedback.typeLabel}
                 </label>
                 <select
                   id="feedback-type"
@@ -95,26 +104,26 @@ const isConfigured = accessKey && accessKey !== "YOUR_WEB3FORMS_ACCESS_KEY_HERE"
                   required
                   class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
                 >
-                  <option value="">Pick one</option>
-                  <option value="Error in math">Error in math or formula</option>
-                  <option value="Missing feature">Missing feature or input</option>
-                  <option value="Wrong vendor data">Outdated vendor spec or pricing</option>
-                  <option value="Suggestion">Suggestion or improvement</option>
-                  <option value="Bug">UI bug or broken behavior</option>
-                  <option value="Other">Other</option>
+                  <option value="">{s.feedback.typePlaceholder}</option>
+                  <option value="Error in math">{s.feedback.typeMath}</option>
+                  <option value="Missing feature">{s.feedback.typeMissing}</option>
+                  <option value="Wrong vendor data">{s.feedback.typeVendor}</option>
+                  <option value="Suggestion">{s.feedback.typeSuggestion}</option>
+                  <option value="Bug">{s.feedback.typeBug}</option>
+                  <option value="Other">{s.feedback.typeOther}</option>
                 </select>
               </div>
 
               <div>
                 <label for="feedback-email" class="mb-1 block text-sm font-medium text-slate-800">
-                  Your email <span class="font-normal text-slate-500">(optional)</span>
+                  {s.feedback.emailLabel} <span class="font-normal text-slate-500">{s.feedback.emailOptional}</span>
                 </label>
                 <input
                   id="feedback-email"
                   type="email"
                   name="email"
                   autocomplete="email"
-                  placeholder="you@example.com"
+                  placeholder={s.feedback.emailPlaceholder}
                   class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
                 />
               </div>
@@ -122,7 +131,7 @@ const isConfigured = accessKey && accessKey !== "YOUR_WEB3FORMS_ACCESS_KEY_HERE"
 
             <div>
               <label for="feedback-message" class="mb-1 block text-sm font-medium text-slate-800">
-                Your message
+                {s.feedback.messageLabel}
               </label>
               <textarea
                 id="feedback-message"
@@ -131,11 +140,11 @@ const isConfigured = accessKey && accessKey !== "YOUR_WEB3FORMS_ACCESS_KEY_HERE"
                 rows="5"
                 minlength="10"
                 maxlength="2000"
-                placeholder="What did you find? Be specific so we can fix it fast."
+                placeholder={s.feedback.messagePlaceholder}
                 class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
               ></textarea>
               <p class="mt-1 text-xs text-slate-500">
-                We don't store this anywhere. It just lands in our inbox.
+                {s.feedback.messageHint}
               </p>
             </div>
 
@@ -148,7 +157,7 @@ const isConfigured = accessKey && accessKey !== "YOUR_WEB3FORMS_ACCESS_KEY_HERE"
                 <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
                   <path d="M3.105 2.289a.75.75 0 00-.826.95l1.414 4.926A1.5 1.5 0 005.135 9.25h6.115a.75.75 0 010 1.5H5.135a1.5 1.5 0 00-1.442 1.085l-1.414 4.926a.75.75 0 00.826.95 28.896 28.896 0 0015.293-7.154.75.75 0 000-1.114A28.897 28.897 0 003.105 2.289z" />
                 </svg>
-                <span data-feedback-submit-label>Send feedback</span>
+                <span data-feedback-submit-label>{s.feedback.submit}</span>
               </button>
               <p
                 class="text-xs text-slate-600 transition"
@@ -178,8 +187,16 @@ const isConfigured = accessKey && accessKey !== "YOUR_WEB3FORMS_ACCESS_KEY_HERE"
       const honeypot = form.querySelector<HTMLInputElement>('input[name="botcheck"]');
       if (honeypot?.checked) return;
 
+      const i18n = {
+        submit: form.dataset.i18nSubmit || "Send feedback",
+        submitting: form.dataset.i18nSubmitting || "Sending...",
+        error: form.dataset.i18nError || "Send failed. Try again in a moment.",
+        successStrong: form.dataset.i18nSuccessStrong || "Thanks!",
+        successBody: form.dataset.i18nSuccessBody || "Your feedback landed in our inbox.",
+      };
+
       submitBtn.disabled = true;
-      submitLabel.textContent = "Sending...";
+      submitLabel.textContent = i18n.submitting;
       status.textContent = "";
       status.className = "text-xs text-slate-600 transition";
 
@@ -196,20 +213,25 @@ const isConfigured = accessKey && accessKey !== "YOUR_WEB3FORMS_ACCESS_KEY_HERE"
           // Replace form with success state
           const parent = form.parentElement;
           if (parent) {
-            parent.innerHTML =
-              '<div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-900"><strong>Thanks!</strong> Your feedback landed in our inbox. We read every message.</div>';
+            const box = document.createElement("div");
+            box.className =
+              "rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-900";
+            const strong = document.createElement("strong");
+            strong.textContent = i18n.successStrong;
+            box.append(strong, " " + i18n.successBody);
+            parent.replaceChildren(box);
           }
         } else {
-          status.textContent = json.message || "Send failed. Try again in a moment.";
+          status.textContent = json.message || i18n.error;
           status.className = "text-xs text-red-700 transition";
           submitBtn.disabled = false;
-          submitLabel.textContent = "Send feedback";
+          submitLabel.textContent = i18n.submit;
         }
       } catch (err) {
-        status.textContent = "Send failed. Check your connection and try again.";
+        status.textContent = i18n.error;
         status.className = "text-xs text-red-700 transition";
         submitBtn.disabled = false;
-        submitLabel.textContent = "Send feedback";
+        submitLabel.textContent = i18n.submit;
       }
     });
   });

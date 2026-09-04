@@ -1,6 +1,8 @@
 ---
 import LegalLayout from "~/layouts/LegalLayout.astro";
 import { SITE_NAME, SITE_URL } from "~/lib/seo";
+import type { PageRef } from "~/i18n/routing";
+import { DEFAULT_LOCALE } from "~/i18n/config";
 
 const seo = {
   title: `Cookie Policy | ${SITE_NAME}`,
@@ -8,10 +10,14 @@ const seo = {
     "Cookie policy for StorageCalc: which cookies we use (Google Analytics and Google Ads when consented), why, and how to opt out.",
   canonical: `${SITE_URL}/cookie-policy/`,
 };
+
+const pageRef: PageRef = { kind: "static", key: "cookie-policy" };
 ---
 
 <LegalLayout
   seo={seo}
+  locale={DEFAULT_LOCALE}
+  pageRef={pageRef}
   title="Cookie Policy"
   subtitle="Which cookies StorageCalc uses, why, and how to control them."
   updated="2026-05-18"

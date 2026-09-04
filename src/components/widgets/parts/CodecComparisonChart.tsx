@@ -1,4 +1,6 @@
 import { CODEC_MULTIPLIERS, type Codec } from "~/lib/surveillance";
+import type { WidgetStrings } from "~/i18n/widget-strings";
+import { fmt } from "~/i18n/format";
 
 /**
  * Shows storage required at each codec relative to H.264 baseline, with the
@@ -9,12 +11,14 @@ import { CODEC_MULTIPLIERS, type Codec } from "~/lib/surveillance";
 interface Props {
   selected: Codec;
   totalBytesAtSelected: number;
+  strings: WidgetStrings;
 }
 
-const CODEC_INFO: { codec: Codec; label: string; sub: string }[] = [
-  { codec: "h264", label: "H.264", sub: "Baseline" },
-  { codec: "h265", label: "H.265", sub: "~50% vs H.264" },
-  { codec: "h265+", label: "H.265+ / Smart", sub: "~75% vs H.264" },
+/** Saving vs the H.264 baseline, derived from the codec multipliers. */
+const CODEC_ORDER: { codec: Codec; label: string }[] = [
+  { codec: "h264", label: "H.264" },
+  { codec: "h265", label: "H.265" },
+  { codec: "h265+", label: "H.265+ / Smart" },
 ];
 
 function fmtTB(bytes: number): string {
@@ -24,8 +28,24 @@ function fmtTB(bytes: number): string {
   return `${(bytes / 1024 ** 2).toFixed(0)} MB`;
 }
 
-export default function CodecComparisonChart({ selected, totalBytesAtSelected }: Props) {
+export default function CodecComparisonChart({
+  selected,
+  totalBytesAtSelected,
+  strings,
+}: Props) {
+  const t = strings.widget;
   if (!isFinite(totalBytesAtSelected) || totalBytesAtSelected <= 0) return null;
+
+  const info = CODEC_ORDER.map(({ codec, label }) => ({
+    codec,
+    label,
+    sub:
+      CODEC_MULTIPLIERS[codec] === 1
+        ? t.codecBaseline
+        : fmt(t.codecSaving, {
+            percent: Math.round((1 - CODEC_MULTIPLIERS[codec]) * 100),
+          }),
+  }));
 
   // Recover baseline from the selected codec's bytes
   const selectedMultiplier = CODEC_MULTIPLIERS[selected];
@@ -36,18 +56,15 @@ export default function CodecComparisonChart({ selected, totalBytesAtSelected }:
     <div
       className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
       role="region"
-      aria-label="Storage comparison across video codecs"
+      aria-label={t.codecChartAria}
     >
       <div className="mb-1 flex items-baseline justify-between">
-        <h3 className="text-base font-semibold text-slate-900">Codec comparison</h3>
-        <span className="text-xs text-slate-500">Same scene, same retention, different codec</span>
+        <h3 className="text-base font-semibold text-slate-900">{t.codecComparison}</h3>
+        <span className="text-xs text-slate-500">{t.codecComparisonHint}</span>
       </div>
-      <p className="mb-4 text-sm text-slate-600">
-        Modern smart codecs (H.265+ / WiseStream II / Zipstream) cut storage by ~75% on
-        typical scenes without visible quality loss.
-      </p>
+      <p className="mb-4 text-sm text-slate-600">{t.codecChartBody}</p>
       <div className="space-y-3">
-        {CODEC_INFO.map((info) => {
+        {info.map((info) => {
           const bytes = baselineH264 * CODEC_MULTIPLIERS[info.codec];
           const pct = (bytes / max) * 100;
           const isSelected = info.codec === selected;

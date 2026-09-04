@@ -4,18 +4,31 @@ import Header from "~/components/Header.astro";
 import Footer from "~/components/Footer.astro";
 import CookieBanner from "~/components/CookieBanner.astro";
 import type { SeoMeta } from "~/lib/seo";
+import { DEFAULT_LOCALE, LOCALE_META, type Locale } from "~/i18n/config";
+import { alternates, type PageRef } from "~/i18n/routing";
 
 interface Props {
   seo: SeoMeta;
   schemas?: unknown[];
+  locale?: Locale;
+  /** Which page this is, so the layout can emit hreflang alternates. */
+  pageRef?: PageRef;
 }
 
-const { seo, schemas = [] } = Astro.props;
+const {
+  seo,
+  schemas = [],
+  locale = DEFAULT_LOCALE,
+  pageRef = { kind: "home" } as PageRef,
+} = Astro.props;
+
+const meta = LOCALE_META[locale];
 const canonical = seo.canonical ?? new URL(Astro.url.pathname, Astro.site).toString();
+const langAlternates = alternates(pageRef);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={meta.hreflang} dir={meta.dir}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,10 +41,15 @@ const canonical = seo.canonical ?? new URL(Astro.url.pathname, Astro.site).toStr
     )}
     <link rel="canonical" href={canonical} />
 
+    {langAlternates.map((alt) => (
+      <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />
+    ))}
+
     <meta property="og:type" content="website" />
     <meta property="og:title" content={seo.title} />
     <meta property="og:description" content={seo.description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={meta.hreflang} />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={seo.title} />
@@ -59,11 +77,11 @@ const canonical = seo.canonical ?? new URL(Astro.url.pathname, Astro.site).toStr
   </head>
   <body class="min-h-screen text-slate-900">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-brand-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white">Skip to content</a>
-    <Header />
+    <Header locale={locale} pageRef={pageRef} />
     <main id="main">
       <slot />
     </main>
-    <Footer />
-    <CookieBanner />
+    <Footer locale={locale} />
+    <CookieBanner locale={locale} />
   </body>
 </html>

@@ -18,27 +18,10 @@ export type Codec = (typeof CODECS)[number];
 export const RECORDING_MODES = ["continuous", "motion", "scheduled"] as const;
 export type RecordingMode = (typeof RECORDING_MODES)[number];
 
-export const RESOLUTION_LABELS: Record<Resolution, string> = {
-  "480p": "480p (D1 / 0.4 MP)",
-  "720p": "720p (1 MP)",
-  "1080p": "1080p (2 MP)",
-  "3MP": "3 MP",
-  "4MP": "4 MP",
-  "5MP": "5 MP",
-  "4K": "4K (8 MP)",
-};
-
-export const CODEC_LABELS: Record<Codec, string> = {
-  h264: "H.264",
-  h265: "H.265 / HEVC",
-  "h265+": "H.265+ / Smart Codec (Zipstream, WiseStream II)",
-};
-
-export const RECORDING_LABELS: Record<RecordingMode, string> = {
-  continuous: "24/7 continuous",
-  motion: "Motion-triggered only",
-  scheduled: "Scheduled hours",
-};
+/*
+ * Display labels for resolutions, codecs and recording modes live in the
+ * locale dictionaries (src/i18n/ui/), keyed by the same ids used here.
+ */
 
 /**
  * Reference H.264 bitrates at 25 fps, in kbps. Derived from public spec sheets
@@ -176,9 +159,13 @@ export interface VendorPreset {
   hoursPerDay: number;
   retentionDays: number;
   cameras: number;
-  notes: string;
 }
 
+/**
+ * Default input values per vendor. The explanatory note shown next to the
+ * preset lives in `vendorNotes` in the locale dictionaries, keyed by the
+ * same vendor id used here.
+ */
 export const VENDOR_PRESETS: Record<string, VendorPreset> = {
   hikvision: {
     resolution: "1080p",
@@ -188,8 +175,6 @@ export const VENDOR_PRESETS: Record<string, VendorPreset> = {
     hoursPerDay: 24,
     retentionDays: 30,
     cameras: 8,
-    notes:
-      "Hikvision DS-2CD series cameras typically ship with H.265+ enabled, halving storage again over plain H.265.",
   },
   hanwha: {
     resolution: "1080p",
@@ -199,8 +184,6 @@ export const VENDOR_PRESETS: Record<string, VendorPreset> = {
     hoursPerDay: 24,
     retentionDays: 30,
     cameras: 8,
-    notes:
-      "Hanwha (Samsung) Wisenet cameras use WiseStream II, a smart codec that performs similarly to H.265+ on stationary scenes.",
   },
   axis: {
     resolution: "1080p",
@@ -210,8 +193,6 @@ export const VENDOR_PRESETS: Record<string, VendorPreset> = {
     hoursPerDay: 24,
     retentionDays: 30,
     cameras: 8,
-    notes:
-      "Axis cameras with Zipstream achieve roughly 50-80% bitrate reduction depending on scene activity. The 'H.265+' preset approximates this.",
   },
   genetec: {
     resolution: "1080p",
@@ -221,8 +202,6 @@ export const VENDOR_PRESETS: Record<string, VendorPreset> = {
     hoursPerDay: 24,
     retentionDays: 60,
     cameras: 16,
-    notes:
-      "Genetec Security Center Archivers commonly aggregate many cameras across long retention windows; defaults reflect that scale.",
   },
   unifi: {
     resolution: "4MP",
@@ -232,8 +211,6 @@ export const VENDOR_PRESETS: Record<string, VendorPreset> = {
     hoursPerDay: 24,
     retentionDays: 14,
     cameras: 4,
-    notes:
-      "UniFi Protect G4 and G5 cameras default to H.265 at native resolution. UniFi Protect itself trims footage automatically when the drive fills.",
   },
 };
 

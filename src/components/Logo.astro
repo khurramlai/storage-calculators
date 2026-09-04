@@ -1,16 +1,20 @@
 ---
+import { DEFAULT_LOCALE, type Locale } from "~/i18n/config";
+import { homeHref } from "~/i18n/routing";
+
 interface Props {
   /** Show the StorageCalc text label beside the logo image. On by default. */
   text?: boolean;
   size?: "sm" | "md" | "lg";
+  locale?: Locale;
 }
-const { text = true, size = "md" } = Astro.props;
+const { text = true, size = "md", locale = DEFAULT_LOCALE } = Astro.props;
 
 const heightClass = size === "sm" ? "h-7" : size === "lg" ? "h-12" : "h-9";
 const textSize = size === "sm" ? "text-base" : size === "lg" ? "text-xl" : "text-lg";
 ---
 
-<a href="/" class="group inline-flex items-center gap-2.5 font-semibold text-slate-900">
+<a href={homeHref(locale)} class="group inline-flex items-center gap-2.5 font-semibold text-slate-900">
   <img
     src="/images/logo.webp"
     alt="StorageCalc logo"

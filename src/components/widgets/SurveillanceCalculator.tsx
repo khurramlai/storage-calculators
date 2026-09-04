@@ -3,17 +3,16 @@ import type { CalculatorConfig } from "~/lib/types";
 import {
   calculateSurveillance,
   CODECS,
-  CODEC_LABELS,
-  RECORDING_LABELS,
   RECORDING_MODES,
   RESOLUTIONS,
-  RESOLUTION_LABELS,
   VENDOR_PRESETS,
   type Codec,
   type RecordingMode,
   type Resolution,
   type VendorKey,
 } from "~/lib/surveillance";
+import type { WidgetStrings } from "~/i18n/widget-strings";
+import { fmt, plural } from "~/i18n/format";
 import ActionBar from "./parts/ActionBar";
 import CodecComparisonChart from "./parts/CodecComparisonChart";
 
@@ -52,9 +51,23 @@ function fmtKbps(kbps: number): string {
   return `${kbps.toFixed(0)} kbps`;
 }
 
-export default function SurveillanceCalculator({ config }: { config: CalculatorConfig }) {
+export default function SurveillanceCalculator({
+  config,
+  strings,
+}: {
+  config: CalculatorConfig;
+  strings: WidgetStrings;
+}) {
+  const t = strings.widget;
+  const resolutionLabels = strings.resolutions!;
+  const codecLabels = strings.codecs!;
+  const recordingLabels = strings.recordingModes!;
+  const vendorNotes = strings.vendorNotes!;
   const props = (config.widgetProps ?? {}) as SurveillanceWidgetProps;
   const preset = props.preset ? VENDOR_PRESETS[props.preset] : undefined;
+  const presetNote = props.preset
+    ? vendorNotes[props.preset as keyof typeof vendorNotes]
+    : undefined;
 
   const initial = {
     cameras: props.defaults?.cameras ?? preset?.cameras ?? 4,
@@ -113,9 +126,9 @@ export default function SurveillanceCalculator({ config }: { config: CalculatorC
       <div className="grid gap-6 lg:grid-cols-5">
         <div className="lg:col-span-3">
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-lg font-semibold text-slate-900">Inputs</h2>
+            <h2 className="mb-4 text-lg font-semibold text-slate-900">{t.inputs}</h2>
             <div className="grid grid-cols-12 gap-4">
-              <Field label="Number of cameras" cols={6}>
+              <Field label={t.cameraCount} cols={6}>
                 {({ fieldId }) => (
                   <input
                     id={fieldId}
@@ -130,7 +143,7 @@ export default function SurveillanceCalculator({ config }: { config: CalculatorC
                 )}
               </Field>
 
-              <Field label="Retention" cols={6} help="How many days of footage to keep.">
+              <Field label={t.retention} cols={6} help={t.retentionHelp}>
                 {({ fieldId, helpId }) => (
                   <div className="flex items-center gap-2">
                     <input
@@ -146,12 +159,12 @@ export default function SurveillanceCalculator({ config }: { config: CalculatorC
                       }
                       className={`${inputCls} flex-1`}
                     />
-                    <span className="text-sm text-slate-500">days</span>
+                    <span className="text-sm text-slate-500">{t.days}</span>
                   </div>
                 )}
               </Field>
 
-              <Field label="Resolution" cols={6}>
+              <Field label={t.resolution} cols={6}>
                 {({ fieldId }) => (
                   <select
                     id={fieldId}
@@ -161,14 +174,14 @@ export default function SurveillanceCalculator({ config }: { config: CalculatorC
                   >
                     {RESOLUTIONS.map((r) => (
                       <option key={r} value={r}>
-                        {RESOLUTION_LABELS[r]}
+                        {resolutionLabels[r]}
                       </option>
                     ))}
                   </select>
                 )}
               </Field>
 
-              <Field label="Frame rate" cols={6} help="Higher fps = smoother motion + more storage.">
+              <Field label={t.frameRate} cols={6} help={t.frameRateHelp}>
                 {({ fieldId, helpId }) => (
                   <select
                     id={fieldId}
@@ -179,14 +192,14 @@ export default function SurveillanceCalculator({ config }: { config: CalculatorC
                   >
                     {FPS_OPTIONS.map((f) => (
                       <option key={f} value={f}>
-                        {f} fps
+                        {fmt(t.fps, { n: f })}
                       </option>
                     ))}
                   </select>
                 )}
               </Field>
 
-              <Field label="Codec" cols={12} help="Modern codecs reduce bitrate by 50–75%.">
+              <Field label={t.codec} cols={12} help={t.codecHelp}>
                 {({ fieldId, helpId }) => (
                   <select
                     id={fieldId}
@@ -197,14 +210,14 @@ export default function SurveillanceCalculator({ config }: { config: CalculatorC
                   >
                     {CODECS.map((c) => (
                       <option key={c} value={c}>
-                        {CODEC_LABELS[c]}
+                        {codecLabels[c]}
                       </option>
                     ))}
                   </select>
                 )}
               </Field>
 
-              <Field label="Recording mode" cols={6}>
+              <Field label={t.recordingMode} cols={6}>
                 {({ fieldId }) => (
                   <select
                     id={fieldId}
@@ -214,7 +227,7 @@ export default function SurveillanceCalculator({ config }: { config: CalculatorC
                   >
                     {RECORDING_MODES.map((m) => (
                       <option key={m} value={m}>
-                        {RECORDING_LABELS[m]}
+                        {recordingLabels[m]}
                       </option>
                     ))}
                   </select>
@@ -222,14 +235,14 @@ export default function SurveillanceCalculator({ config }: { config: CalculatorC
               </Field>
 
               <Field
-                label="Hours per day"
+                label={t.hoursPerDay}
                 cols={6}
                 help={
                   recordingMode === "motion"
-                    ? "Active window, motion-only further reduces actual recording time."
+                    ? t.hoursHelpMotion
                     : recordingMode === "scheduled"
-                    ? "Hours per day the schedule is active."
-                    : "24 for 24/7 recording."
+                    ? t.hoursHelpScheduled
+                    : t.hoursHelpContinuous
                 }
               >
                 {({ fieldId, helpId }) => (
@@ -252,13 +265,13 @@ export default function SurveillanceCalculator({ config }: { config: CalculatorC
               </Field>
             </div>
 
-            {preset && (
+            {presetNote && (
               <p className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
-                <strong>Vendor preset applied:</strong> {preset.notes}
+                <strong>{t.vendorPresetApplied}</strong> {presetNote}
               </p>
             )}
 
-            <ActionBar onCalculate={handleCalculate} onReset={handleReset} />
+            <ActionBar onCalculate={handleCalculate} onReset={handleReset} strings={strings} />
           </div>
         </div>
 
@@ -269,45 +282,52 @@ export default function SurveillanceCalculator({ config }: { config: CalculatorC
               highlight ? "ring-4 ring-brand-300" : ""
             }`}
             role="region"
-            aria-label="Calculation results"
+            aria-label={t.resultsRegion}
             aria-live="polite"
           >
-            <h2 className="mb-2 text-lg font-semibold text-brand-900">Results</h2>
+            <h2 className="mb-2 text-lg font-semibold text-brand-900">{t.results}</h2>
 
             <PrimaryStat
-              label="Total storage required"
+              label={t.totalStorage}
               value={fmtBytes(result.bytesTotal)}
-              hint={`${cameras} camera${cameras === 1 ? "" : "s"} × ${retentionDays} days`}
+              hint={fmt(t.totalStorageHint, {
+                cameras: plural(cameras, t.cameraSingular, t.cameraPlural),
+                days: retentionDays,
+              })}
             />
 
-            <Row label="Per camera, total" value={fmtBytes(result.bytesPerCameraTotal)} />
-            <Row label="All cameras, per day" value={fmtBytes(result.bytesPerDay)} />
+            <Row label={t.perCameraTotal} value={fmtBytes(result.bytesPerCameraTotal)} />
+            <Row label={t.allCamerasPerDay} value={fmtBytes(result.bytesPerDay)} />
             <Row
-              label="Bitrate per camera"
+              label={t.bitratePerCamera}
               value={fmtKbps(result.bitratePerCameraKbps)}
-              hint={`${RESOLUTION_LABELS[resolution]} @ ${fps} fps, ${CODEC_LABELS[codec]}`}
+              hint={fmt(t.bitrateHint, {
+                resolution: resolutionLabels[resolution],
+                fps,
+                codec: codecLabels[codec],
+              })}
             />
             <Row
-              label="Recommended drive"
-              value={
-                result.recommendedHddCount === 1
-                  ? `1 × ${result.recommendedHddTb} TB`
-                  : `${result.recommendedHddCount} × ${result.recommendedHddTb} TB`
-              }
-              hint="Surveillance-grade HDD (e.g. WD Purple, Seagate SkyHawk)."
+              label={t.recommendedDrive}
+              value={`${result.recommendedHddCount} × ${result.recommendedHddTb} TB`}
+              hint={t.recommendedDriveHint}
             />
             {result.savingsVsH264 > 0.01 && (
               <Row
-                label="Saved vs H.264"
+                label={t.savedVsH264}
                 value={`${(result.savingsVsH264 * 100).toFixed(0)}%`}
-                hint="By choosing a more efficient codec."
+                hint={t.savedVsH264Hint}
               />
             )}
           </div>
         </div>
       </div>
 
-      <CodecComparisonChart selected={codec} totalBytesAtSelected={result.bytesTotal} />
+      <CodecComparisonChart
+        selected={codec}
+        totalBytesAtSelected={result.bytesTotal}
+        strings={strings}
+      />
     </div>
   );
 }

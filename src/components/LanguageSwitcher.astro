@@ -1,0 +1,99 @@
+---
+import { LOCALE_META, type Locale } from "~/i18n/config";
+import { availableLocales, href, type PageRef } from "~/i18n/routing";
+import { strings } from "~/i18n";
+
+interface Props {
+  locale: Locale;
+  pageRef: PageRef;
+  /** Rendered as a plain list instead of a dropdown (used in the mobile menu). */
+  variant?: "dropdown" | "list";
+}
+
+const { locale, pageRef, variant = "dropdown" } = Astro.props;
+const s = strings(locale);
+
+// Same page in every locale that actually has it, so switching language never
+// dumps the visitor on the home page or a 404.
+const options = availableLocales(pageRef).map((code) => ({
+  code,
+  label: LOCALE_META[code].label,
+  hreflang: LOCALE_META[code].hreflang,
+  href: href(code, pageRef),
+  current: code === locale,
+}));
+
+const currentLabel = LOCALE_META[locale].label;
+---
+
+{options.length > 1 && (
+  variant === "list" ? (
+    <div class="mt-2 border-t border-slate-200 pt-2">
+      <p class="px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
+        {s.nav.language}
+      </p>
+      <div class="flex flex-wrap gap-1.5 px-3 py-1">
+        {options.map((opt) => (
+          <a
+            href={opt.href}
+            hreflang={opt.hreflang}
+            lang={opt.hreflang}
+            aria-current={opt.current ? "true" : undefined}
+            class={`rounded-full px-2.5 py-1 text-xs font-medium ring-1 transition ${
+              opt.current
+                ? "bg-brand-50 text-brand-700 ring-brand-200"
+                : "bg-white text-slate-600 ring-slate-200 hover:text-brand-700"
+            }`}
+          >
+            {opt.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  ) : (
+    <div class="relative" data-dropdown>
+      <button
+        type="button"
+        class="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-900"
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-label={s.nav.chooseLanguage}
+        data-dropdown-trigger
+      >
+        <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" />
+          <path d="M3 12h18M12 3c2.5 2.7 2.5 15.3 0 18M12 3c-2.5 2.7-2.5 15.3 0 18" stroke="currentColor" stroke-width="1.8" />
+        </svg>
+        <span>{currentLabel}</span>
+        <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+          <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.38a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+        </svg>
+      </button>
+      <div
+        class="invisible absolute end-0 mt-2 w-48 rounded-2xl border border-slate-200 bg-white p-2 opacity-0 shadow-xl shadow-slate-900/10 transition data-[open=true]:visible data-[open=true]:opacity-100"
+        data-dropdown-menu
+        role="menu"
+      >
+        {options.map((opt) => (
+          <a
+            href={opt.href}
+            hreflang={opt.hreflang}
+            lang={opt.hreflang}
+            role="menuitem"
+            aria-current={opt.current ? "true" : undefined}
+            class={`flex items-center justify-between rounded-xl px-3 py-2 text-sm transition hover:bg-slate-50 ${
+              opt.current ? "font-semibold text-brand-700" : "text-slate-700 hover:text-brand-700"
+            }`}
+          >
+            <span>{opt.label}</span>
+            {opt.current && (
+              <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 111.4-1.4l3.8 3.8 6.8-6.8a1 1 0 011.4 0z" clip-rule="evenodd" />
+              </svg>
+            )}
+          </a>
+        ))}
+      </div>
+    </div>
+  )
+)}

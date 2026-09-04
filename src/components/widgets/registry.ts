@@ -1,11 +1,13 @@
 import type { ComponentType } from "react";
 import type { CalculatorConfig } from "~/lib/types";
+import type { WidgetStrings } from "~/i18n/widget-strings";
 import CloudStorageCalculator from "./CloudStorageCalculator";
 import RaidCalculator from "./RaidCalculator";
 import SurveillanceCalculator from "./SurveillanceCalculator";
 
 export type WidgetProps = {
   config: CalculatorConfig;
+  strings: WidgetStrings;
 };
 
 /**

@@ -7,6 +7,8 @@ import {
   calculateCloudStorage,
   type Provider,
 } from "~/lib/cloud-storage";
+import type { WidgetStrings } from "~/i18n/widget-strings";
+import { fmt } from "~/i18n/format";
 import ActionBar from "./parts/ActionBar";
 import TierComparison from "./parts/TierComparison";
 
@@ -42,9 +44,13 @@ function fmtUsd(n: number, precision = 2): string {
 
 export default function CloudStorageCalculator({
   config,
+  strings,
 }: {
   config: CalculatorConfig;
+  strings: WidgetStrings;
 }) {
+  const t = strings.widget;
+  const tierNotes = strings.tierNotes!;
   const props = (config.widgetProps ?? {}) as CloudWidgetProps;
   const lockedProvider = props.lockedProvider;
 
@@ -120,16 +126,19 @@ export default function CloudStorageCalculator({
   );
 
   const showRetrieval = currentTier.retrievalPerGb > 0;
+  const tierNote =
+    tierNotes[`${provider}:${currentTier.id}` as keyof typeof tierNotes] ??
+    currentTier.notes;
 
   return (
     <div className="space-y-6">
       <div className="grid gap-6 lg:grid-cols-5">
         <div className="lg:col-span-3">
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-lg font-semibold text-slate-900">Inputs</h2>
+            <h2 className="mb-4 text-lg font-semibold text-slate-900">{t.inputs}</h2>
             <div className="grid grid-cols-12 gap-4">
               {!lockedProvider && (
-                <Field label="Cloud provider" cols={12}>
+                <Field label={t.cloudProvider} cols={12}>
                   {({ fieldId }) => (
                     <select
                       id={fieldId}
@@ -147,7 +156,7 @@ export default function CloudStorageCalculator({
                 </Field>
               )}
 
-              <Field label="Storage tier" cols={12} help={currentTier.notes}>
+              <Field label={t.storageTier} cols={12} help={tierNote}>
                 {({ fieldId, helpId }) => (
                   <select
                     id={fieldId}
@@ -156,16 +165,21 @@ export default function CloudStorageCalculator({
                     onChange={(e) => setTierId(e.target.value)}
                     className={inputCls}
                   >
-                    {tiers.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.label} (${t.pricePerGbMonth.toFixed(5).replace(/0+$/, "0")}/GB/mo)
+                    {tiers.map((tier) => (
+                      <option key={tier.id} value={tier.id}>
+                        {fmt(t.tierOption, {
+                          label: tier.label,
+                          price: tier.pricePerGbMonth
+                            .toFixed(5)
+                            .replace(/0+$/, "0"),
+                        })}
                       </option>
                     ))}
                   </select>
                 )}
               </Field>
 
-              <Field label="Storage amount" cols={6}>
+              <Field label={t.storageAmount} cols={6}>
                 {({ fieldId }) => (
                   <div className="flex gap-2">
                     <input
@@ -181,7 +195,7 @@ export default function CloudStorageCalculator({
                       value={storageUnit}
                       onChange={(e) => setStorageUnit(e.target.value as SizeUnit)}
                       className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
-                      aria-label="Storage size unit"
+                      aria-label={t.storageUnit}
                     >
                       <option value="GB">GB</option>
                       <option value="TB">TB</option>
@@ -191,9 +205,11 @@ export default function CloudStorageCalculator({
               </Field>
 
               <Field
-                label="Monthly egress"
+                label={t.monthlyEgress}
                 cols={6}
-                help={`First ${PRICING[provider].freeEgressGb} GB/mo to internet is free.`}
+                help={fmt(t.egressHelp, {
+                  gb: PRICING[provider].freeEgressGb,
+                })}
               >
                 {({ fieldId, helpId }) => (
                   <div className="flex items-center gap-2">
@@ -213,9 +229,9 @@ export default function CloudStorageCalculator({
               </Field>
 
               <Field
-                label="Write requests"
+                label={t.writeRequests}
                 cols={6}
-                help="PUT, COPY, POST, LIST, per 1,000 requests."
+                help={t.writeRequestsHelp}
               >
                 {({ fieldId, helpId }) => (
                   <div className="flex items-center gap-2">
@@ -237,9 +253,9 @@ export default function CloudStorageCalculator({
               </Field>
 
               <Field
-                label="Read requests"
+                label={t.readRequests}
                 cols={6}
-                help="GET, SELECT, per 1,000 requests."
+                help={t.readRequestsHelp}
               >
                 {({ fieldId, helpId }) => (
                   <div className="flex items-center gap-2">
@@ -262,9 +278,12 @@ export default function CloudStorageCalculator({
 
               {showRetrieval && (
                 <Field
-                  label="Data retrieved this month"
+                  label={t.dataRetrieved}
                   cols={12}
-                  help={`${currentTier.label} charges $${currentTier.retrievalPerGb.toFixed(3)}/GB to retrieve data from cold storage.`}
+                  help={fmt(t.retrievalHelp, {
+                    tier: currentTier.label,
+                    price: currentTier.retrievalPerGb.toFixed(3),
+                  })}
                 >
                   {({ fieldId, helpId }) => (
                     <div className="flex items-center gap-2">
@@ -280,7 +299,7 @@ export default function CloudStorageCalculator({
                         }
                         className={`${inputCls} flex-1`}
                       />
-                      <span className="text-sm text-slate-500">GB</span>
+                      <span className="text-sm text-slate-500">{t.gb}</span>
                     </div>
                   )}
                 </Field>
@@ -288,12 +307,10 @@ export default function CloudStorageCalculator({
             </div>
 
             <p className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-900">
-              <strong>Note:</strong> Prices are list rates for the most common US region as of
-              early 2025. Actual cost varies by region, committed-use discounts, and provider
-              updates. Use for estimation, not invoicing.
+              <strong>{t.priceNoteStrong}</strong> {t.priceNoteBody}
             </p>
 
-            <ActionBar onCalculate={handleCalculate} onReset={handleReset} />
+            <ActionBar onCalculate={handleCalculate} onReset={handleReset} strings={strings} />
           </div>
         </div>
 
@@ -304,44 +321,52 @@ export default function CloudStorageCalculator({
               highlight ? "ring-4 ring-brand-300" : ""
             }`}
             role="region"
-            aria-label="Estimated monthly and annual cost"
+            aria-label={t.estimatedCostRegion}
             aria-live="polite"
           >
-            <h2 className="mb-2 text-lg font-semibold text-brand-900">Estimated cost</h2>
+            <h2 className="mb-2 text-lg font-semibold text-brand-900">{t.estimatedCost}</h2>
 
             <PrimaryStat
-              label="Monthly cost"
+              label={t.monthlyCost}
               value={fmtUsd(result.monthlyTotal)}
-              hint={`${storageGb.toLocaleString()} GB on ${currentTier.label}`}
+              hint={fmt(t.monthlyCostHint, {
+                gb: storageGb.toLocaleString(strings.locale),
+                tier: currentTier.label,
+              })}
             />
 
-            <Row label="Annual cost" value={fmtUsd(result.annualTotal, 0)} />
-            <Row label="Storage" value={fmtUsd(result.storageCost)} />
+            <Row label={t.annualCost} value={fmtUsd(result.annualTotal, 0)} />
+            <Row label={t.storageLine} value={fmtUsd(result.storageCost)} />
             {result.egressCost > 0 && (
               <Row
-                label="Egress"
+                label={t.egressLine}
                 value={fmtUsd(result.egressCost)}
-                hint={`After ${PRICING[provider].freeEgressGb} GB free tier.`}
+                hint={fmt(t.egressHint, {
+                  gb: PRICING[provider].freeEgressGb,
+                })}
               />
             )}
             {result.writeOpsCost > 0 && (
-              <Row label="Write ops" value={fmtUsd(result.writeOpsCost)} />
+              <Row label={t.writeOps} value={fmtUsd(result.writeOpsCost)} />
             )}
             {result.readOpsCost > 0 && (
-              <Row label="Read ops" value={fmtUsd(result.readOpsCost)} />
+              <Row label={t.readOps} value={fmtUsd(result.readOpsCost)} />
             )}
             {result.retrievalCost > 0 && (
               <Row
-                label="Retrieval"
+                label={t.retrievalLine}
                 value={fmtUsd(result.retrievalCost)}
-                hint={`$${currentTier.retrievalPerGb.toFixed(3)}/GB out of ${currentTier.label}`}
+                hint={fmt(t.retrievalHint, {
+                  price: currentTier.retrievalPerGb.toFixed(3),
+                  tier: currentTier.label,
+                })}
               />
             )}
           </div>
         </div>
       </div>
 
-      <TierComparison result={result} selectedTierId={tierId} />
+      <TierComparison result={result} selectedTierId={tierId} strings={strings} />
     </div>
   );
 }

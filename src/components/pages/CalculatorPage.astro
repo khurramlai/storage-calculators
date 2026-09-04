@@ -1,0 +1,162 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import FAQ from "~/components/FAQ.astro";
+import RelatedCalculators from "~/components/RelatedCalculators.astro";
+import CategoryIcon from "~/components/CategoryIcon.astro";
+import FeedbackForm from "~/components/FeedbackForm.astro";
+import CalculatorRoot from "~/components/widgets/CalculatorRoot";
+import { getLocalizedRelated, type LocalizedCalculator } from "~/lib/localized";
+import {
+  calculatorSeo,
+  webAppSchema,
+  faqSchema,
+  breadcrumbSchema,
+} from "~/lib/seo";
+import { strings } from "~/i18n";
+import { widgetStrings } from "~/i18n/widget-strings";
+import { homeHref, categoryHref, staticHref, type PageRef } from "~/i18n/routing";
+import type { Locale } from "~/i18n/config";
+
+interface Props {
+  calc: LocalizedCalculator;
+  locale: Locale;
+}
+
+const { calc, locale } = Astro.props;
+const s = strings(locale);
+const related = getLocalizedRelated(locale, calc.slug);
+
+const seo = calculatorSeo(calc, locale);
+const schemas = [
+  webAppSchema(calc, locale),
+  faqSchema(calc),
+  breadcrumbSchema(calc, locale),
+];
+const pageRef: PageRef = { kind: "calculator", slug: calc.slug };
+---
+
+<BaseLayout seo={seo} schemas={schemas} locale={locale} pageRef={pageRef}>
+  <!-- HERO -->
+  <section class="gradient-hero relative overflow-hidden border-b border-slate-100">
+    <div class="pointer-events-none absolute -top-32 -right-24 h-80 w-80 rounded-full bg-gradient-to-br from-violet-200/60 to-pink-200/30 blur-3xl" aria-hidden="true"></div>
+
+    <div class="container-wide relative py-10 sm:py-14">
+      <nav class="text-sm text-slate-500" aria-label={s.common.breadcrumb}>
+        <ol class="flex flex-wrap items-center gap-2">
+          <li><a href={homeHref(locale)} class="hover:text-brand-700">{s.common.home}</a></li>
+          <li aria-hidden="true">›</li>
+          <li><a href={categoryHref(locale, calc.category)} class="hover:text-brand-700">{s.category[calc.category]}</a></li>
+          <li aria-hidden="true">›</li>
+          <li class="text-slate-700" aria-current="page">{calc.title}</li>
+        </ol>
+      </nav>
+
+      <div class="mt-6 flex flex-wrap items-start gap-4">
+        <span class={`accent-${calc.category} inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ring-1`}>
+          <CategoryIcon category={calc.category} class="h-7 w-7" />
+        </span>
+        <div class="min-w-0 flex-1">
+          <span class={`accent-${calc.category} inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ring-1`}>
+            {s.category[calc.category]}
+          </span>
+          <h1 class="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
+            {calc.title}
+          </h1>
+          {calc.tagline && (
+            <p class="mt-3 max-w-2xl text-base text-slate-600 sm:text-lg">{calc.tagline}</p>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALCULATOR WIDGET -->
+  <section class="container-wide py-10">
+    <CalculatorRoot
+      config={calc}
+      strings={widgetStrings(locale, calc.widget)}
+      client:load
+    />
+  </section>
+
+  <!-- LONG-FORM CONTENT -->
+  {(calc.content?.intro || calc.content?.formula || calc.content?.useCases?.length) && (
+    <section class="bg-white py-12 sm:py-16">
+      <div class="container-wide">
+        <div class="grid gap-12 lg:grid-cols-3">
+          <div class="lg:col-span-2 prose-app">
+            {calc.content?.intro && (
+              <>
+                <h2>{s.calcPage.aboutHeading}</h2>
+                <div set:html={calc.content.intro} />
+              </>
+            )}
+
+            {calc.content?.formula && (
+              <>
+                <h2>{s.calcPage.formulaHeading}</h2>
+                <div set:html={calc.content.formula} />
+              </>
+            )}
+
+            {calc.content?.useCases && calc.content.useCases.length > 0 && (
+              <>
+                <h2>{s.calcPage.useCasesHeading}</h2>
+                <ul>
+                  {calc.content.useCases.map((uc) => <li>{uc}</li>)}
+                </ul>
+              </>
+            )}
+          </div>
+
+          <aside class="lg:col-span-1">
+            <div class="sticky top-24 rounded-2xl border border-brand-100 bg-brand-50 p-6">
+              <h3 class="text-sm font-semibold uppercase tracking-wide text-brand-700">
+                {s.calcPage.freeNoSignup}
+              </h3>
+              <p class="mt-2 text-sm text-slate-700">
+                {s.calcPage.privacyNote}
+                <a href={staticHref(locale, "disclaimer")} class="underline hover:text-brand-900">{s.calcPage.disclaimerLink}</a>.
+              </p>
+              {calc.keywords?.length > 0 && (
+                <div class="mt-5 border-t border-brand-100 pt-4">
+                  <h4 class="text-xs font-semibold uppercase tracking-wide text-brand-700">{s.calcPage.alsoKnownAs}</h4>
+                  <ul class="mt-2 flex flex-wrap gap-1.5">
+                    {calc.keywords.slice(0, 6).map((k) => (
+                      <li class="rounded-full bg-white px-2 py-0.5 text-[11px] text-slate-600 ring-1 ring-brand-100">{k}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- FAQ -->
+  {calc.faqs && calc.faqs.length > 0 && (
+    <section class="container-wide py-12 sm:py-16">
+      <FAQ faqs={calc.faqs} locale={locale} />
+    </section>
+  )}
+
+  <!-- FEEDBACK FORM -->
+  <section class="container-wide pb-12 sm:pb-16">
+    <FeedbackForm
+      calculatorTitle={calc.title}
+      calculatorSlug={calc.slug}
+      locale={locale}
+    />
+  </section>
+
+  <!-- RELATED -->
+  {related.length > 0 && (
+    <section class="bg-white py-12 sm:py-16">
+      <div class="container-wide">
+        <RelatedCalculators calculators={related} locale={locale} />
+      </div>
+    </section>
+  )}
+</BaseLayout>

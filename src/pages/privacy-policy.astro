@@ -1,6 +1,8 @@
 ---
 import LegalLayout from "~/layouts/LegalLayout.astro";
 import { SITE_NAME, SITE_URL } from "~/lib/seo";
+import type { PageRef } from "~/i18n/routing";
+import { DEFAULT_LOCALE } from "~/i18n/config";
 
 const seo = {
   title: `Privacy Policy | ${SITE_NAME}`,
@@ -8,10 +10,14 @@ const seo = {
     "Privacy policy for StorageCalc: what we collect (almost nothing), what we don't, and how Google Analytics and Google Ads cookies are handled.",
   canonical: `${SITE_URL}/privacy-policy/`,
 };
+
+const pageRef: PageRef = { kind: "static", key: "privacy-policy" };
 ---
 
 <LegalLayout
   seo={seo}
+  locale={DEFAULT_LOCALE}
+  pageRef={pageRef}
   title="Privacy Policy"
   subtitle="What we collect, why, and how to opt out. Short version: almost nothing personal, but we use Google Analytics and may show Google ads."
   updated="2026-05-18"

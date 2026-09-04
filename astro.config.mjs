@@ -4,6 +4,36 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 
+/**
+ * Locale prefixes that appear in URLs. English is un-prefixed and lives at the
+ * site root. Keep in sync with LOCALES in src/i18n/config.ts.
+ */
+const LOCALE_PREFIXES = ["fr", "es", "de", "ar", "ms", "id", "fil", "cs"];
+
+/**
+ * Last path segment of every legal page, in every locale, plus the About page.
+ * The sitemap integration only ever sees finished URLs, so the classification
+ * has to recognise localized slugs by name. Keep in sync with the `slug` fields
+ * in src/i18n/pages/*.ts (and the English page filenames in src/pages/).
+ */
+const LEGAL_SLUGS = new Set([
+  // en
+  "privacy-policy",
+  "cookie-policy",
+  "terms-of-service",
+  "disclaimer",
+  // fr
+  "politique-de-confidentialite",
+  "politique-cookies",
+  "conditions-utilisation",
+  "avertissement",
+]);
+
+const ABOUT_SLUGS = new Set([
+  "about",
+  "a-propos",
+]);
+
 export default defineConfig({
   site: "https://storagecalculators.com",
   trailingSlash: "ignore",
@@ -21,8 +51,13 @@ export default defineConfig({
         const { pathname } = new URL(item.url);
         const lastmod = new Date().toISOString();
 
-        // Homepage: highest priority
-        if (pathname === "/") {
+        // Split off the locale prefix so the same rules apply in every language.
+        const segments = pathname.split("/").filter(Boolean);
+        if (LOCALE_PREFIXES.includes(segments[0])) segments.shift();
+        const slug = segments[segments.length - 1] ?? "";
+
+        // Homepage (any locale): highest priority
+        if (segments.length === 0) {
           return {
             ...item,
             priority: 1.0,
@@ -32,12 +67,7 @@ export default defineConfig({
         }
 
         // Legal pages: low priority, rarely change
-        if (
-          pathname.includes("/privacy-policy") ||
-          pathname.includes("/cookie-policy") ||
-          pathname.includes("/terms-of-service") ||
-          pathname.includes("/disclaimer")
-        ) {
+        if (LEGAL_SLUGS.has(slug)) {
           return {
             ...item,
             priority: 0.3,
@@ -47,7 +77,7 @@ export default defineConfig({
         }
 
         // About page: middle priority
-        if (pathname.includes("/about")) {
+        if (ABOUT_SLUGS.has(slug)) {
           return {
             ...item,
             priority: 0.6,

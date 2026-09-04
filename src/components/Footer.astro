@@ -1,70 +1,80 @@
 ---
 import Logo from "./Logo.astro";
-import { CATEGORY_LABELS, getCalculatorsByCategory, getAllCalculators } from "~/lib/registry";
+import { getLocalizedByCategory, getLocalizedCalculator } from "~/lib/localized";
+import { DEFAULT_LOCALE, type Locale } from "~/i18n/config";
+import { strings, fmt } from "~/i18n";
+import { calculatorHref, categoryHref, staticHref } from "~/i18n/routing";
+import type { CalculatorCategory } from "~/lib/types";
 
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const s = strings(locale);
 const year = new Date().getFullYear();
-const categories = Object.entries(CATEGORY_LABELS) as [
-  keyof typeof CATEGORY_LABELS,
-  string,
-][];
+
+const CATEGORY_KEYS: CalculatorCategory[] = [
+  "raid",
+  "surveillance",
+  "nas",
+  "cloud",
+  "self-storage",
+  "specialty",
+];
+
+const categories = CATEGORY_KEYS.map((key) => ({
+  key,
+  label: s.category[key],
+  count: getLocalizedByCategory(locale, key).length,
+})).filter((c) => c.count > 0);
 
 // Top-volume calculators for the "popular" footer column
-const popular = getAllCalculators()
-  .filter((c) =>
-    [
-      "raid-storage-calculator",
-      "cctv-storage-calculator",
-      "nvr-storage-calculator",
-      "s3-storage-calculator",
-      "azure-storage-calculator",
-      "google-cloud-storage-calculator",
-    ].includes(c.slug)
-  )
+const POPULAR_SLUGS = [
+  "raid-storage-calculator",
+  "cctv-storage-calculator",
+  "nvr-storage-calculator",
+  "s3-storage-calculator",
+  "azure-storage-calculator",
+  "google-cloud-storage-calculator",
+];
+
+const popular = POPULAR_SLUGS.map((slug) => getLocalizedCalculator(locale, slug))
+  .filter((c): c is NonNullable<typeof c> => Boolean(c))
   .slice(0, 6);
+
+const legalLinks = [
+  { href: staticHref(locale, "about"), label: s.footer.about },
+  { href: staticHref(locale, "disclaimer"), label: s.footer.disclaimer },
+  { href: staticHref(locale, "privacy-policy"), label: s.footer.privacy },
+  { href: staticHref(locale, "cookie-policy"), label: s.footer.cookies },
+  { href: staticHref(locale, "terms-of-service"), label: s.footer.terms },
+  { href: "/sitemap-index.xml", label: s.footer.sitemap },
+];
 ---
 
 <footer class="mt-20 border-t border-slate-200 bg-white">
   <div class="container-wide py-12">
     <div class="grid gap-10 lg:grid-cols-12">
       <div class="lg:col-span-4">
-        <Logo />
+        <Logo locale={locale} />
         <p class="mt-4 max-w-sm text-sm text-slate-600">
-          Free calculators for RAID, surveillance, NAS, and cloud storage.
-          Accurate math, no signup, no tracking until you accept.
+          {s.footer.blurb}
         </p>
         <p class="mt-4 text-xs text-slate-500">
-          Made for IT admins, sysadmins, installers, and anyone who's tired of
-          vendor calculators that hide the formula.
+          {s.footer.madeFor}
         </p>
       </div>
 
       <div class="grid gap-10 sm:grid-cols-3 lg:col-span-8">
         <div>
-          <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-900">Categories</h3>
+          <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-900">{s.footer.categories}</h3>
           <ul class="mt-4 space-y-2 text-sm">
             {
-              categories.map(([key, label]) => {
-                const count = getCalculatorsByCategory(key).length;
-                if (!count) return null;
-                return (
-                  <li>
-                    <a href={`/#${key}`} class="text-slate-600 hover:text-brand-700">
-                      {label} <span class="text-slate-500">({count})</span>
-                    </a>
-                  </li>
-                );
-              })
-            }
-          </ul>
-        </div>
-        <div>
-          <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-900">Popular</h3>
-          <ul class="mt-4 space-y-2 text-sm">
-            {
-              popular.map((c) => (
+              categories.map(({ key, label, count }) => (
                 <li>
-                  <a href={`/${c.slug}/`} class="text-slate-600 hover:text-brand-700">
-                    {c.title.replace(/ (Storage )?Calculator$/, "")}
+                  <a href={categoryHref(locale, key)} class="text-slate-600 hover:text-brand-700">
+                    {label} <span class="text-slate-500">({count})</span>
                   </a>
                 </li>
               ))
@@ -72,22 +82,36 @@ const popular = getAllCalculators()
           </ul>
         </div>
         <div>
-          <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-900">Legal</h3>
+          <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-900">{s.footer.popular}</h3>
           <ul class="mt-4 space-y-2 text-sm">
-            <li><a href="/about/" class="text-slate-600 hover:text-brand-700">About</a></li>
-            <li><a href="/disclaimer/" class="text-slate-600 hover:text-brand-700">Disclaimer</a></li>
-            <li><a href="/privacy-policy/" class="text-slate-600 hover:text-brand-700">Privacy Policy</a></li>
-            <li><a href="/cookie-policy/" class="text-slate-600 hover:text-brand-700">Cookie Policy</a></li>
-            <li><a href="/terms-of-service/" class="text-slate-600 hover:text-brand-700">Terms of Service</a></li>
-            <li><a href="/sitemap-index.xml" class="text-slate-600 hover:text-brand-700">Sitemap</a></li>
+            {
+              popular.map((c) => (
+                <li>
+                  <a href={calculatorHref(locale, c.slug)} class="text-slate-600 hover:text-brand-700">
+                    {c.title}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-900">{s.footer.legal}</h3>
+          <ul class="mt-4 space-y-2 text-sm">
+            {legalLinks.map((link) => (
+              <li><a href={link.href} class="text-slate-600 hover:text-brand-700">{link.label}</a></li>
+            ))}
           </ul>
         </div>
       </div>
     </div>
 
     <div class="mt-12 flex flex-col items-start justify-between gap-3 border-t border-slate-200 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center">
-      <p>&copy; {year} StorageCalc. All calculators free to use. Results are estimates. See <a href="/disclaimer/" class="underline hover:text-brand-700">Disclaimer</a>.</p>
-      <p>Built with Astro + Tailwind. Static, fast, privacy-first.</p>
+      <p>
+        {fmt(s.footer.copyright, { year })}
+        <a href={staticHref(locale, "disclaimer")} class="underline hover:text-brand-700">{s.footer.disclaimer}</a>.
+      </p>
+      <p>{s.footer.builtWith}</p>
     </div>
   </div>
 </footer>

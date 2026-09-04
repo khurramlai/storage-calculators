@@ -1,4 +1,5 @@
 import type { CloudStorageResult } from "~/lib/cloud-storage";
+import type { WidgetStrings } from "~/i18n/widget-strings";
 
 /**
  * Bar chart comparing monthly cost of every storage tier from the user's
@@ -21,10 +22,13 @@ function fmtUsd(n: number): string {
 export default function TierComparison({
   result,
   selectedTierId,
+  strings,
 }: {
   result: CloudStorageResult;
   selectedTierId: string;
+  strings: WidgetStrings;
 }) {
+  const t = strings.widget;
   const max = Math.max(...result.tierComparison.map((c) => c.monthlyTotal), 0.0001);
   if (max <= 0) return null;
 
@@ -32,16 +36,13 @@ export default function TierComparison({
     <div
       className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
       role="region"
-      aria-label="Monthly cost comparison across storage tiers"
+      aria-label={t.tierChartAria}
     >
       <div className="mb-1 flex items-baseline justify-between">
-        <h3 className="text-base font-semibold text-slate-900">Tier comparison</h3>
-        <span className="text-xs text-slate-500">Same data, different tier</span>
+        <h3 className="text-base font-semibold text-slate-900">{t.tierComparison}</h3>
+        <span className="text-xs text-slate-500">{t.tierComparisonHint}</span>
       </div>
-      <p className="mb-4 text-sm text-slate-600">
-        Moving infrequently-accessed data to colder tiers can cut storage costs by 75–95% ,
-        at the cost of retrieval latency and per-GB read fees.
-      </p>
+      <p className="mb-4 text-sm text-slate-600">{t.tierChartBody}</p>
       <div className="space-y-3">
         {result.tierComparison.map(({ tier, monthlyTotal }) => {
           const pct = (monthlyTotal / max) * 100;
@@ -56,7 +57,8 @@ export default function TierComparison({
                     {tier.label}
                   </span>
                   <span className="text-xs text-slate-500">
-                    ${tier.pricePerGbMonth.toFixed(5).replace(/0+$/, "0")}/GB
+                    ${tier.pricePerGbMonth.toFixed(5).replace(/0+$/, "0")}
+                    {t.perGb}
                   </span>
                 </div>
                 <span
@@ -66,7 +68,8 @@ export default function TierComparison({
                       : "font-mono text-sm text-slate-600"
                   }
                 >
-                  {fmtUsd(monthlyTotal)}/mo
+                  {fmtUsd(monthlyTotal)}
+                  {t.perMonth}
                 </span>
               </div>
               <div

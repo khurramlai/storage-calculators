@@ -1,6 +1,8 @@
 ---
 import LegalLayout from "~/layouts/LegalLayout.astro";
 import { SITE_NAME, SITE_URL } from "~/lib/seo";
+import type { PageRef } from "~/i18n/routing";
+import { DEFAULT_LOCALE } from "~/i18n/config";
 
 const seo = {
   title: `Disclaimer | ${SITE_NAME}`,
@@ -8,10 +10,14 @@ const seo = {
     "Disclaimer for StorageCalc: calculators are estimates, vendor pricing changes, RAID isn't backup, and other things to know before relying on results.",
   canonical: `${SITE_URL}/disclaimer/`,
 };
+
+const pageRef: PageRef = { kind: "static", key: "disclaimer" };
 ---
 
 <LegalLayout
   seo={seo}
+  locale={DEFAULT_LOCALE}
+  pageRef={pageRef}
   title="Disclaimer"
   subtitle="What these calculators can and can't tell you. Read before relying on a number for a real-world decision."
   updated="2026-05-18"

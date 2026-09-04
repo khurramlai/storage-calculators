@@ -1,19 +1,42 @@
 ---
 import Logo from "./Logo.astro";
-import { CATEGORY_LABELS, getCalculatorsByCategory } from "~/lib/registry";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import { getLocalizedByCategory } from "~/lib/localized";
+import { DEFAULT_LOCALE, type Locale } from "~/i18n/config";
+import { strings } from "~/i18n";
+import { calculatorHref, categoryHref, staticHref, type PageRef } from "~/i18n/routing";
+import type { CalculatorCategory } from "~/lib/types";
 
-const categories = Object.entries(CATEGORY_LABELS) as [
-  keyof typeof CATEGORY_LABELS,
-  string,
-][];
-const categoriesWithCounts = categories
-  .map(([key, label]) => ({ key, label, count: getCalculatorsByCategory(key).length }))
-  .filter((c) => c.count > 0);
+interface Props {
+  locale?: Locale;
+  pageRef?: PageRef;
+}
+
+const { locale = DEFAULT_LOCALE, pageRef = { kind: "home" } as PageRef } = Astro.props;
+const s = strings(locale);
+
+const CATEGORY_KEYS: CalculatorCategory[] = [
+  "raid",
+  "surveillance",
+  "nas",
+  "cloud",
+  "self-storage",
+  "specialty",
+];
+
+const categoriesWithCounts = CATEGORY_KEYS.map((key) => ({
+  key,
+  label: s.category[key],
+  count: getLocalizedByCategory(locale, key).length,
+})).filter((c) => c.count > 0);
+
+const raidHref = calculatorHref(locale, "raid-storage-calculator");
+const aboutHref = staticHref(locale, "about");
 ---
 
 <header class="sticky top-0 z-30 border-b border-slate-200/70 bg-white/85 backdrop-blur supports-[backdrop-filter]:bg-white/70">
   <div class="container-wide flex h-16 items-center justify-between gap-4">
-    <Logo />
+    <Logo locale={locale} />
 
     <nav class="hidden items-center gap-1 md:flex" aria-label="Primary">
       <div class="relative" data-dropdown>
@@ -24,7 +47,7 @@ const categoriesWithCounts = categories
           aria-expanded="false"
           data-dropdown-trigger
         >
-          Calculators
+          {s.nav.calculators}
           <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.38a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
           </svg>
@@ -37,7 +60,7 @@ const categoriesWithCounts = categories
           {
             categoriesWithCounts.map(({ key, label, count }) => (
               <a
-                href={`/#${key}`}
+                href={categoryHref(locale, key)}
                 class="flex items-center justify-between rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-50 hover:text-brand-700"
                 role="menuitem"
               >
@@ -51,20 +74,22 @@ const categoriesWithCounts = categories
         </div>
       </div>
 
-      <a href="/about/" class="rounded-full px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-900">About</a>
+      <a href={aboutHref} class="rounded-full px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-900">{s.nav.about}</a>
+
+      <LanguageSwitcher locale={locale} pageRef={pageRef} />
     </nav>
 
     <div class="flex items-center gap-2">
-      <a href="/raid-storage-calculator/" class="btn-primary hidden sm:inline-flex">
-        Try RAID calculator
-        <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+      <a href={raidHref} class="btn-primary hidden sm:inline-flex">
+        {s.nav.tryRaid}
+        <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 rtl:-scale-x-100">
           <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd" />
         </svg>
       </a>
       <button
         type="button"
         class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 md:hidden"
-        aria-label="Open menu"
+        aria-label={s.nav.openMenu}
         aria-expanded="false"
         data-mobile-trigger
       >
@@ -79,7 +104,7 @@ const categoriesWithCounts = categories
       {
         categoriesWithCounts.map(({ key, label, count }) => (
           <a
-            href={`/#${key}`}
+            href={categoryHref(locale, key)}
             class="flex items-center justify-between rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-50"
           >
             <span>{label}</span>
@@ -87,8 +112,9 @@ const categoriesWithCounts = categories
           </a>
         ))
       }
-      <a href="/about/" class="block rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">About</a>
-      <a href="/raid-storage-calculator/" class="btn-primary mt-2 w-full">Try RAID calculator</a>
+      <a href={aboutHref} class="block rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">{s.nav.about}</a>
+      <a href={raidHref} class="btn-primary mt-2 w-full">{s.nav.tryRaid}</a>
+      <LanguageSwitcher locale={locale} pageRef={pageRef} variant="list" />
     </div>
   </div>
 </header>
