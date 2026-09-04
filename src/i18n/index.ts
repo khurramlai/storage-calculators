@@ -4,6 +4,7 @@ import fr from "./ui/fr";
 import es from "./ui/es";
 import de from "./ui/de";
 import ar from "./ui/ar";
+import ms from "./ui/ms";
 
 /**
  * UI dictionaries. A locale with no dictionary yet falls back to English so
@@ -16,7 +17,7 @@ const DICTS: Record<Locale, UIStrings> = {
   es,
   de,
   ar,
-  ms: en,
+  ms,
   id: en,
   fil: en,
   cs: en,
