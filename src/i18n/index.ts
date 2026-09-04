@@ -2,6 +2,7 @@ import { DEFAULT_LOCALE, LOCALE_META, type Locale } from "./config";
 import en, { type UIStrings } from "./ui/en";
 import fr from "./ui/fr";
 import es from "./ui/es";
+import de from "./ui/de";
 
 /**
  * UI dictionaries. A locale with no dictionary yet falls back to English so
@@ -12,7 +13,7 @@ const DICTS: Record<Locale, UIStrings> = {
   en,
   fr,
   es,
-  de: en,
+  de,
   ar: en,
   ms: en,
   id: en,
