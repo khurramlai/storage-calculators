@@ -61,6 +61,23 @@ export interface FAQItem {
   answer: string;
 }
 
+/**
+ * A long-form editorial section rendered after the formula block. This is
+ * where a page earns its place: worked examples, vendor tables, gotchas that
+ * the widget alone can't teach. `html` is trusted markup authored in-repo.
+ */
+export interface ContentSection {
+  heading: string;
+  html: string;
+}
+
+/** Editorial add-on for a calculator, keyed by slug via its filename. */
+export interface CalculatorEditorial {
+  sections: ContentSection[];
+  guides?: string[];
+  reviewed?: string;
+}
+
 export interface CalculatorConfig {
   /** URL slug, becomes /[slug]/ */
   slug: string;
@@ -72,7 +89,7 @@ export interface CalculatorConfig {
   tagline?: string;
   category: CalculatorCategory;
 
-  /** SEO keywords this page targets (for internal tracking + meta keywords) */
+  /** Search terms this page targets. Used for <meta name="keywords"> only. */
   keywords: string[];
 
   /**
@@ -95,11 +112,13 @@ export interface CalculatorConfig {
   /** Optional widget-specific config bag (e.g., RAID levels supported) */
   widgetProps?: Record<string, unknown>;
 
-  /** Long-form SEO content blocks (rendered between widget and FAQ) */
+  /** Long-form content blocks (rendered between widget and FAQ) */
   content?: {
     intro?: string;
     formula?: string;
     useCases?: string[];
+    /** Deep-dive sections unique to this page. See ContentSection. */
+    sections?: ContentSection[];
   };
 
   /** FAQ section, feeds JSON-LD FAQ schema */
@@ -107,6 +126,12 @@ export interface CalculatorConfig {
 
   /** Slugs of related calculators (renders the "Related" block) */
   related?: string[];
+
+  /** Slugs of guides in src/content/guides/ to list under "Further reading" */
+  guides?: string[];
+
+  /** ISO date the copy and figures were last checked against vendor docs */
+  reviewed?: string;
 
   /** Show in homepage grid? (default true) */
   featured?: boolean;

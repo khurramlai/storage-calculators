@@ -34,7 +34,7 @@ const pages: StaticPages = {
       <p>Wo Hersteller keine genauen Zahlen veröffentlichen, verwenden wir konservative Mittelwerte, die zu realen Installationen passen. Der Abschnitt „Über diesen Rechner“ nennt auf jeder Seite die konkrete Quelle.</p>
 
       <h2>Was Sie hier finden</h2>
-      <p>Eine Sammlung von Rechnern zu RAID, Videoüberwachung, NAS, Cloud-Speicher und einigen Spezialbereichen. Die vollständige Liste finden Sie auf der <a href="/de/">Startseite</a>. Weitere kommen hinzu, sobald wir schlecht abgedeckte Suchanfragen entdecken.</p>
+      <p>Eine Sammlung von Rechnern zu RAID, Videoüberwachung, NAS, Cloud-Speicher und einigen Spezialbereichen. Die vollständige Liste finden Sie auf der <a href="/de/">Startseite</a>. Weitere kommen hinzu, wenn Leser sie anfragen und die Formel öffentlich dokumentiert ist.</p>
 
       <h2>Was Sie hier NICHT finden</h2>
       <ul>
@@ -45,13 +45,12 @@ const pages: StaticPages = {
       </ul>
 
       <h2>Wie diese Website kostenlos bleibt</h2>
-      <p>Die Website wird statisch auf Cloudflare Pages (kostenloser Tarif) gehostet und blendet möglicherweise irgendwann Google-Anzeigen ein, um die Domainverlängerung zu decken. Die Berechnungen selbst bleiben dauerhaft kostenlos und ohne Anmeldung.</p>
+      <p>Die Website wird statisch auf Cloudflare Pages gehostet. Domain und der Aufwand, Preise und Spezifikationen aktuell zu halten, werden durch klar gekennzeichnete Google-Anzeigen finanziert. Anzeigen beeinflussen nie, welche Rechner es gibt, wie sie sortiert sind oder was sie ausgeben.</p>
 
       <h2>Mitwirken und Korrekturen</h2>
       <p>Wenn Sie einen Fehler, eine falsche Herstellerangabe finden oder sich einen weiteren Rechner wünschen:</p>
       <ul>
-        <li>Öffnen Sie ein Issue oder einen Pull Request im Projekt-Repository (Link folgt).</li>
-        <li>Oder schreiben Sie dem Betreiber (Link folgt).</li>
+        <li>Schreiben Sie an <a href="mailto:contact@storagecalculators.com">contact@storagecalculators.com</a> oder nutzen Sie die <a href="/de/kontakt/">Kontaktseite</a>, mit Ihren Eingaben und dem erwarteten Ergebnis.</li>
       </ul>
       <p>Meldungen zu Rechenfehlern haben höchste Priorität: Genauigkeit ist der Sinn dieser Website.</p>
 
@@ -353,6 +352,33 @@ const pages: StaticPages = {
 
       <h2>13. Kontakt</h2>
       <p>Noch Fragen? Siehe die Seite <a href="/de/ueber-uns/">Über uns</a>.</p>
+    `,
+  },
+  contact: {
+    slug: "kontakt",
+    title: "Kontakt",
+    description:
+      "So erreichen Sie die Person hinter StorageCalc: fehlerhafte Formel oder veralteten Preis melden, einen Rechner vorschlagen oder eine Frage stellen.",
+    subtitle:
+      "Diese Website wird von einer Person betrieben, die jede Nachricht liest. Korrekturen an der Mathematik werden zuerst beantwortet.",
+    body: `
+      <h2>E-Mail</h2>
+      <p>Am schnellsten per E-Mail: <a href="mailto:contact@storagecalculators.com"><strong>contact@storagecalculators.com</strong></a>. Antwort in der Regel innerhalb von zwei Werktagen. Wenn Sie einen Fehler melden, erfahren Sie, sobald die Korrektur online ist.</p>
+      <h2>Was hilfreich ist</h2>
+      <ul>
+        <li><strong>Falsches Ergebnis oder falsche Formel:</strong> Rechnerseite, Ihre Eingaben, das erhaltene und das erwartete Ergebnis. Ein Link zum Herstellerdokument erspart eine Rückfrage.</li>
+        <li><strong>Veralteter Preis oder veraltete Spezifikation:</strong> welcher Anbieter oder welches Kameramodell, und wo der aktuelle Wert veröffentlicht ist.</li>
+        <li><strong>Rechnerwunsch:</strong> was Sie dimensionieren möchten und welche Eingangsdaten Sie haben.</li>
+        <li><strong>Fehler auf der Website:</strong> Browser, Gerät und was Sie angeklickt haben.</li>
+      </ul>
+      <h2>Wobei ich nicht helfen kann</h2>
+      <ul>
+        <li>Herstellersupport. Ich arbeite weder für Hikvision noch für Ubiquiti, AWS oder einen anderen Anbieter.</li>
+        <li>Werbung oder gesponserte Platzierungen.</li>
+        <li>Linktausch oder Gastbeiträge.</li>
+      </ul>
+      <h2>Datenschutz</h2>
+      <p>Nachrichten werden nur zur Beantwortung und zur Behebung des Gemeldeten verwendet. Siehe <a href="/de/datenschutzerklaerung/">Datenschutzerklärung</a>.</p>
     `,
   },
 };

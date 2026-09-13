@@ -3,7 +3,8 @@ import Logo from "./Logo.astro";
 import { getLocalizedByCategory, getLocalizedCalculator } from "~/lib/localized";
 import { DEFAULT_LOCALE, type Locale } from "~/i18n/config";
 import { strings, fmt } from "~/i18n";
-import { calculatorHref, categoryHref, staticHref } from "~/i18n/routing";
+import { calculatorHref, categoryHref, staticHref, guidesHref } from "~/i18n/routing";
+import { CONTACT_EMAIL } from "~/lib/site";
 import type { CalculatorCategory } from "~/lib/types";
 
 interface Props {
@@ -45,6 +46,8 @@ const popular = POPULAR_SLUGS.map((slug) => getLocalizedCalculator(locale, slug)
 
 const legalLinks = [
   { href: staticHref(locale, "about"), label: s.footer.about },
+  { href: staticHref(locale, "contact"), label: s.footer.contact },
+  ...(locale === DEFAULT_LOCALE ? [{ href: guidesHref(), label: s.footer.guides }] : []),
   { href: staticHref(locale, "disclaimer"), label: s.footer.disclaimer },
   { href: staticHref(locale, "privacy-policy"), label: s.footer.privacy },
   { href: staticHref(locale, "cookie-policy"), label: s.footer.cookies },
@@ -63,6 +66,9 @@ const legalLinks = [
         </p>
         <p class="mt-4 text-xs text-slate-500">
           {s.footer.madeFor}
+        </p>
+        <p class="mt-4 text-sm">
+          <a href={`mailto:${CONTACT_EMAIL}`} class="text-slate-600 underline decoration-slate-300 hover:text-brand-700">{CONTACT_EMAIL}</a>
         </p>
       </div>
 

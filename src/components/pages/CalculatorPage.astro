@@ -12,9 +12,11 @@ import {
   faqSchema,
   breadcrumbSchema,
 } from "~/lib/seo";
-import { strings } from "~/i18n";
+import { strings, fmt } from "~/i18n";
+import { getCollection } from "astro:content";
+import { AUTHOR } from "~/lib/site";
 import { widgetStrings } from "~/i18n/widget-strings";
-import { homeHref, categoryHref, staticHref, type PageRef } from "~/i18n/routing";
+import { homeHref, categoryHref, staticHref, guideHref, type PageRef } from "~/i18n/routing";
 import type { Locale } from "~/i18n/config";
 
 interface Props {
@@ -33,6 +35,18 @@ const schemas = [
   breadcrumbSchema(calc, locale),
 ];
 const pageRef: PageRef = { kind: "calculator", slug: calc.slug };
+
+// "Further reading" is English-only, like the guides themselves.
+const guideSlugs = locale === "en" ? calc.guides ?? [] : [];
+const allGuides = guideSlugs.length ? await getCollection("guides") : [];
+const guides = guideSlugs
+  .map((slug) => allGuides.find((g) => g.id === slug))
+  .filter((g): g is NonNullable<typeof g> => Boolean(g));
+
+const reviewedLabel = calc.reviewed
+  ? new Date(calc.reviewed).toLocaleDateString(locale, { year: "numeric", month: "long", day: "numeric" })
+  : null;
+const sections = calc.content?.sections ?? [];
 ---
 
 <BaseLayout seo={seo} schemas={schemas} locale={locale} pageRef={pageRef}>
@@ -80,7 +94,7 @@ const pageRef: PageRef = { kind: "calculator", slug: calc.slug };
   </section>
 
   <!-- LONG-FORM CONTENT -->
-  {(calc.content?.intro || calc.content?.formula || calc.content?.useCases?.length) && (
+  {(calc.content?.intro || calc.content?.formula || calc.content?.useCases?.length || sections.length > 0) && (
     <section class="bg-white py-12 sm:py-16">
       <div class="container-wide">
         <div class="grid gap-12 lg:grid-cols-3">
@@ -107,6 +121,21 @@ const pageRef: PageRef = { kind: "calculator", slug: calc.slug };
                 </ul>
               </>
             )}
+
+            {sections.map((section) => (
+              <>
+                <h2>{section.heading}</h2>
+                <div set:html={section.html} />
+              </>
+            ))}
+
+            <div class="not-prose mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-slate-200 pt-6 text-sm text-slate-600">
+              <p>
+                <span class="text-slate-500">{s.calcPage.writtenBy}</span>{" "}
+                <a href={AUTHOR.url} rel="author" class="font-semibold text-slate-800 hover:text-brand-700">{AUTHOR.name}</a>
+              </p>
+              {reviewedLabel && <p>{fmt(s.calcPage.reviewed, { date: reviewedLabel })}</p>}
+            </div>
           </div>
 
           <aside class="lg:col-span-1">
@@ -118,12 +147,17 @@ const pageRef: PageRef = { kind: "calculator", slug: calc.slug };
                 {s.calcPage.privacyNote}
                 <a href={staticHref(locale, "disclaimer")} class="underline hover:text-brand-900">{s.calcPage.disclaimerLink}</a>.
               </p>
-              {calc.keywords?.length > 0 && (
+              {guides.length > 0 && (
                 <div class="mt-5 border-t border-brand-100 pt-4">
-                  <h4 class="text-xs font-semibold uppercase tracking-wide text-brand-700">{s.calcPage.alsoKnownAs}</h4>
-                  <ul class="mt-2 flex flex-wrap gap-1.5">
-                    {calc.keywords.slice(0, 6).map((k) => (
-                      <li class="rounded-full bg-white px-2 py-0.5 text-[11px] text-slate-600 ring-1 ring-brand-100">{k}</li>
+                  <h4 class="text-xs font-semibold uppercase tracking-wide text-brand-700">{s.calcPage.furtherReading}</h4>
+                  <ul class="mt-2 space-y-2">
+                    {guides.map((g) => (
+                      <li>
+                        <a href={guideHref(g.id)} class="block rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-800 ring-1 ring-brand-100 hover:text-brand-700">
+                          {g.data.title}
+                          <span class="mt-0.5 block text-xs font-normal text-slate-500">{g.data.readingMinutes} min read</span>
+                        </a>
+                      </li>
                     ))}
                   </ul>
                 </div>

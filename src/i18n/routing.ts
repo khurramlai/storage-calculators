@@ -10,11 +10,13 @@ import { hasStaticPages, staticPageSlug } from "./static-pages";
 import type { StaticPageKey } from "./types";
 import { SITE_URL } from "~/lib/site";
 
-/** Every URL on the site is one of these three shapes. */
+/** Every URL on the site is one of these shapes. */
 export type PageRef =
   | { kind: "home" }
   | { kind: "calculator"; slug: string } // slug is always the ENGLISH slug
-  | { kind: "static"; key: StaticPageKey };
+  | { kind: "static"; key: StaticPageKey }
+  | { kind: "guides" } // the guides index, English only
+  | { kind: "guide"; slug: string }; // one guide, English only
 
 /** "/fr" for prefixed locales, "" for the default locale. */
 function prefix(locale: Locale): string {
@@ -35,6 +37,10 @@ export function href(locale: Locale, ref: PageRef): string {
     }
     case "static":
       return `${prefix(locale)}/${staticPageSlug(locale, ref.key)}/`;
+    case "guides":
+      return "/guides/";
+    case "guide":
+      return `/guides/${ref.slug}/`;
   }
 }
 
@@ -48,6 +54,14 @@ export function calculatorHref(locale: Locale, englishSlug: string): string {
 
 export function staticHref(locale: Locale, key: StaticPageKey): string {
   return href(locale, { kind: "static", key });
+}
+
+export function guidesHref(): string {
+  return href(DEFAULT_LOCALE, { kind: "guides" });
+}
+
+export function guideHref(slug: string): string {
+  return href(DEFAULT_LOCALE, { kind: "guide", slug });
 }
 
 /** Home page anchor for a category section, e.g. "/fr/#raid". */
@@ -65,6 +79,9 @@ function localeHasPage(locale: Locale, ref: PageRef): boolean {
       return hasTranslation(locale, ref.slug);
     case "static":
       return hasStaticPages(locale);
+    case "guides":
+    case "guide":
+      return false;
   }
 }
 

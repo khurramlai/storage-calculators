@@ -1,4 +1,4 @@
-import type { CalculatorConfig } from "./types";
+import type { CalculatorConfig, CalculatorEditorial } from "./types";
 
 /**
  * Auto-discover every calculator config under src/calculators/.
@@ -10,9 +10,34 @@ const modules = import.meta.glob<{ default: CalculatorConfig }>(
   { eager: true }
 );
 
+/**
+ * Long-form editorial content lives next to the configs in
+ * src/calculators/editorial/<slug>.ts so the config files stay about
+ * behaviour and the prose can be edited without touching widget wiring.
+ */
+const editorialModules = import.meta.glob<{ default: CalculatorEditorial }>(
+  "../calculators/editorial/*.ts",
+  { eager: true }
+);
+const editorialBySlug = new Map<string, CalculatorEditorial>();
+for (const [path, mod] of Object.entries(editorialModules)) {
+  const slug = path.match(/\/editorial\/(.+)\.ts$/)?.[1];
+  if (slug && mod.default) editorialBySlug.set(slug, mod.default);
+}
+
 const all: CalculatorConfig[] = Object.values(modules)
   .map((m) => m.default)
   .filter(Boolean)
+  .map((calc) => {
+    const editorial = editorialBySlug.get(calc.slug);
+    if (!editorial) return calc;
+    return {
+      ...calc,
+      content: { ...calc.content, sections: editorial.sections },
+      guides: editorial.guides ?? calc.guides,
+      reviewed: editorial.reviewed ?? calc.reviewed,
+    };
+  })
   .sort((a, b) => a.title.localeCompare(b.title));
 
 const bySlug = new Map<string, CalculatorConfig>();

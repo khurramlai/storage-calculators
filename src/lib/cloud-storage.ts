@@ -144,7 +144,7 @@ export const PRICING: Record<Provider, ProviderPricing> = {
         id: "cold",
         label: "Cold",
         pricePerGbMonth: 0.0036,
-        writeOpsPer1k: 0.013,
+        writeOpsPer1k: 0.0234,
         readOpsPer1k: 0.0065,
         retrievalPerGb: 0.02,
         minDurationDays: 90,
@@ -154,8 +154,9 @@ export const PRICING: Record<Provider, ProviderPricing> = {
         id: "archive",
         label: "Archive",
         pricePerGbMonth: 0.00099,
-        writeOpsPer1k: 0.13,
-        readOpsPer1k: 5.5,
+        // Azure lists operations per 10,000; these are normalised to per 1,000.
+        writeOpsPer1k: 0.013,
+        readOpsPer1k: 0.55,
         retrievalPerGb: 0.022,
         minDurationDays: 180,
         notes: "Cheapest. Hours-to-day rehydration. Read costs are eye-watering.",
@@ -218,8 +219,9 @@ export const PRICING: Record<Provider, ProviderPricing> = {
         id: "standard",
         label: "Firebase Cloud Storage",
         pricePerGbMonth: 0.026,
-        writeOpsPer1k: 0.05,
-        readOpsPer1k: 0.004,
+        // Firebase lists $0.05 / $0.004 per 10,000 ops; normalised to per 1,000.
+        writeOpsPer1k: 0.005,
+        readOpsPer1k: 0.0004,
         retrievalPerGb: 0,
         minDurationDays: 0,
         notes:

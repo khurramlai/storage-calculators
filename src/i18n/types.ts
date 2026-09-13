@@ -29,6 +29,7 @@ export const STATIC_PAGE_KEYS = [
   "privacy-policy",
   "cookie-policy",
   "terms-of-service",
+  "contact",
 ] as const;
 
 export type StaticPageKey = (typeof STATIC_PAGE_KEYS)[number];

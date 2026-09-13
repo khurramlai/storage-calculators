@@ -44,13 +44,12 @@ const pages: StaticPages = {
       </ul>
 
       <h2>Cómo se mantiene gratuito este sitio</h2>
-      <p>El sitio es estático y está alojado en Cloudflare Pages (plan gratuito), y con el tiempo podría mostrar anuncios de Google para cubrir la renovación del dominio. Los cálculos en sí seguirán siendo siempre gratuitos y sin registro.</p>
+      <p>El sitio es estático y está alojado en Cloudflare Pages. El dominio y el tiempo dedicado a mantener precios y especificaciones al día se financian con anuncios de Google claramente identificados. Los anuncios nunca influyen en qué calculadoras existen, en su orden ni en sus resultados.</p>
 
       <h2>Contribuciones y correcciones</h2>
       <p>Si encuentras un fallo, una especificación de fabricante equivocada o quieres que añadamos una calculadora:</p>
       <ul>
-        <li>Abre una incidencia o una pull request en el repositorio del proyecto (enlace pendiente).</li>
-        <li>O escribe al responsable del sitio (enlace pendiente).</li>
+        <li>Escribe a <a href="mailto:contact@storagecalculators.com">contact@storagecalculators.com</a> o usa la <a href="/es/contacto/">página de contacto</a>, indicando los valores introducidos y el resultado esperado.</li>
       </ul>
       <p>Los avisos de errores de cálculo son la máxima prioridad: la exactitud es la razón de ser de este sitio.</p>
 
@@ -352,6 +351,33 @@ const pages: StaticPages = {
 
       <h2>13. Contacto</h2>
       <p>¿Alguna duda? Consulta la <a href="/es/acerca-de/">página Acerca de</a>.</p>
+    `,
+  },
+  contact: {
+    slug: "contacto",
+    title: "Contacto",
+    description:
+      "Cómo contactar con la persona que gestiona StorageCalc: informar de una fórmula errónea o un precio desactualizado, pedir una calculadora o hacer una pregunta.",
+    subtitle:
+      "Una sola persona gestiona este sitio y lee cada mensaje. Las correcciones de cálculo se atienden primero.",
+    body: `
+      <h2>Correo electrónico</h2>
+      <p>La forma más rápida: <a href="mailto:contact@storagecalculators.com"><strong>contact@storagecalculators.com</strong></a>. Normalmente respondo en dos días laborables. Si informas de un error, te avisaré cuando la corrección esté publicada.</p>
+      <h2>Qué incluir</h2>
+      <ul>
+        <li><strong>Resultado o fórmula incorrectos:</strong> la página de la calculadora, los valores que introdujiste, el resultado obtenido y el esperado. Un enlace al documento del fabricante ahorra un intercambio.</li>
+        <li><strong>Precio o especificación desactualizados:</strong> qué proveedor o modelo de cámara, y dónde está publicada la cifra actual.</li>
+        <li><strong>Petición de calculadora:</strong> qué quieres dimensionar y qué datos tienes.</li>
+        <li><strong>Error del sitio:</strong> navegador, dispositivo y qué pulsaste.</li>
+      </ul>
+      <h2>Con qué no puedo ayudar</h2>
+      <ul>
+        <li>Soporte de fabricantes. No trabajo para Hikvision, Ubiquiti, AWS ni ningún otro.</li>
+        <li>Publicidad o colocación patrocinada.</li>
+        <li>Intercambio de enlaces o artículos de invitado.</li>
+      </ul>
+      <h2>Privacidad</h2>
+      <p>Los mensajes se usan solo para responderte y corregir lo que informaste. Consulta la <a href="/es/politica-de-privacidad/">política de privacidad</a>.</p>
     `,
   },
 };

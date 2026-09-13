@@ -1,0 +1,85 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import CategoryIcon from "~/components/CategoryIcon.astro";
+import { getCollection } from "astro:content";
+import { SITE_NAME, SITE_URL } from "~/lib/seo";
+import { AUTHOR } from "~/lib/site";
+import { DEFAULT_LOCALE } from "~/i18n/config";
+import { guideHref, type PageRef } from "~/i18n/routing";
+
+const guides = (await getCollection("guides")).sort(
+  (a, b) => b.data.published.getTime() - a.data.published.getTime()
+);
+
+const seo = {
+  title: `Storage Guides | ${SITE_NAME}`,
+  description:
+    "Plain-English guides to RAID levels, surveillance storage sizing, video codecs, surveillance hard drives, and cloud storage classes, written by the person who built the calculators.",
+  canonical: `${SITE_URL}/guides/`,
+};
+const pageRef: PageRef = { kind: "guides" };
+
+const CATEGORY_LABEL: Record<string, string> = {
+  raid: "RAID",
+  surveillance: "Surveillance",
+  cloud: "Cloud storage",
+  general: "General",
+};
+const ICON_CATEGORY: Record<string, "raid" | "surveillance" | "cloud"> = {
+  raid: "raid",
+  surveillance: "surveillance",
+  cloud: "cloud",
+  general: "raid",
+};
+
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString("en", { year: "numeric", month: "short", day: "numeric" });
+
+const listSchema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Storage Guides",
+  url: `${SITE_URL}/guides/`,
+  hasPart: guides.map((g) => ({
+    "@type": "Article",
+    headline: g.data.title,
+    url: `${SITE_URL}${guideHref(g.id)}`,
+    datePublished: g.data.published.toISOString(),
+    author: { "@type": "Person", name: AUTHOR.name, url: AUTHOR.url },
+  })),
+};
+---
+
+<BaseLayout seo={seo} schemas={[listSchema]} locale={DEFAULT_LOCALE} pageRef={pageRef}>
+  <section class="gradient-hero border-b border-slate-100">
+    <div class="container-wide py-12 sm:py-16">
+      <span class="eyebrow"><span class="eyebrow-dot"></span>Guides</span>
+      <h1 class="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Storage guides</h1>
+      <p class="mt-3 max-w-2xl text-slate-600">
+        The calculators give you a number. These guides explain where the number comes from, when it is wrong, and what to do about it. Written by {AUTHOR.name}, who also maintains the calculators.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-wide py-12">
+    <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {guides.map((g) => (
+        <li>
+          <a href={guideHref(g.id)} class="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-lg hover:shadow-slate-900/5">
+            <div class="flex items-center gap-3">
+              <span class={`accent-${ICON_CATEGORY[g.data.category]} inline-flex h-10 w-10 items-center justify-center rounded-xl ring-1`}>
+                <CategoryIcon category={ICON_CATEGORY[g.data.category]} class="h-5 w-5" />
+              </span>
+              <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">{CATEGORY_LABEL[g.data.category]}</span>
+            </div>
+            <h2 class="mt-4 text-lg font-semibold text-slate-900 group-hover:text-brand-700">{g.data.title}</h2>
+            <p class="mt-2 flex-1 text-sm text-slate-600">{g.data.summary}</p>
+            <p class="mt-4 text-xs text-slate-500">
+              {fmtDate(g.data.updated ?? g.data.published)} · {g.data.readingMinutes} min read
+            </p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

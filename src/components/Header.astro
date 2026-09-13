@@ -4,7 +4,7 @@ import LanguageSwitcher from "./LanguageSwitcher.astro";
 import { getLocalizedByCategory } from "~/lib/localized";
 import { DEFAULT_LOCALE, type Locale } from "~/i18n/config";
 import { strings } from "~/i18n";
-import { calculatorHref, categoryHref, staticHref, type PageRef } from "~/i18n/routing";
+import { calculatorHref, categoryHref, staticHref, guidesHref, type PageRef } from "~/i18n/routing";
 import type { CalculatorCategory } from "~/lib/types";
 
 interface Props {
@@ -32,6 +32,9 @@ const categoriesWithCounts = CATEGORY_KEYS.map((key) => ({
 
 const raidHref = calculatorHref(locale, "raid-storage-calculator");
 const aboutHref = staticHref(locale, "about");
+const contactHref = staticHref(locale, "contact");
+// Guides are written in English only, so the link is shown on English pages.
+const showGuides = locale === DEFAULT_LOCALE;
 ---
 
 <header class="sticky top-0 z-30 border-b border-slate-200/70 bg-white/85 backdrop-blur supports-[backdrop-filter]:bg-white/70">
@@ -74,7 +77,11 @@ const aboutHref = staticHref(locale, "about");
         </div>
       </div>
 
+      {showGuides && (
+        <a href={guidesHref()} class="rounded-full px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-900">{s.nav.guides}</a>
+      )}
       <a href={aboutHref} class="rounded-full px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-900">{s.nav.about}</a>
+      <a href={contactHref} class="rounded-full px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-900">{s.nav.contact}</a>
 
       <LanguageSwitcher locale={locale} pageRef={pageRef} />
     </nav>
@@ -112,7 +119,11 @@ const aboutHref = staticHref(locale, "about");
           </a>
         ))
       }
+      {showGuides && (
+        <a href={guidesHref()} class="block rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">{s.nav.guides}</a>
+      )}
       <a href={aboutHref} class="block rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">{s.nav.about}</a>
+      <a href={contactHref} class="block rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">{s.nav.contact}</a>
       <a href={raidHref} class="btn-primary mt-2 w-full">{s.nav.tryRaid}</a>
       <LanguageSwitcher locale={locale} pageRef={pageRef} variant="list" />
     </div>

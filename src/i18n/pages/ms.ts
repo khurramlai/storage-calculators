@@ -44,13 +44,12 @@ const pages: StaticPages = {
       </ul>
 
       <h2>Bagaimana laman ini kekal percuma</h2>
-      <p>Laman ini dihoskan secara statik di Cloudflare Pages (pelan percuma) dan mungkin memaparkan iklan Google kelak bagi menampung pembaharuan domain. Pengiraan itu sendiri akan kekal percuma dan tanpa pendaftaran.</p>
+      <p>Laman ini dihoskan secara statik di Cloudflare Pages. Domain dan masa untuk mengemas kini harga serta spesifikasi dibiayai oleh iklan Google yang dilabel dengan jelas. Iklan tidak pernah mempengaruhi kalkulator yang ada, susunannya atau keputusannya.</p>
 
       <h2>Sumbangan dan pembetulan</h2>
       <p>Jika anda menemui pepijat, spesifikasi pengeluar yang salah, atau ingin kalkulator baharu ditambah:</p>
       <ul>
-        <li>Buka isu atau permintaan tarik di repositori projek (pautan menyusul).</li>
-        <li>Atau e-mel pengendali laman (pautan menyusul).</li>
+        <li>Tulis kepada <a href="mailto:contact@storagecalculators.com">contact@storagecalculators.com</a> atau gunakan <a href="/ms/hubungi/">halaman hubungi</a>, bersama nilai yang dimasukkan dan keputusan yang dijangka.</li>
       </ul>
       <p>Laporan tentang pengiraan yang salah diberi keutamaan tertinggi, kerana ketepatan ialah tujuan utama laman ini.</p>
 
@@ -352,6 +351,33 @@ const pages: StaticPages = {
 
       <h2>13. Hubungi kami</h2>
       <p>Ada soalan? Rujuk halaman <a href="/ms/tentang-kami/">Tentang Kami</a>.</p>
+    `,
+  },
+  contact: {
+    slug: "hubungi",
+    title: "Hubungi",
+    description:
+      "Cara menghubungi individu di sebalik StorageCalc: laporkan formula yang salah atau harga lapuk, minta kalkulator baharu, atau ajukan soalan.",
+    subtitle:
+      "Laman ini dikendalikan oleh seorang individu yang membaca setiap mesej. Pembetulan pengiraan dijawab dahulu.",
+    body: `
+      <h2>E-mel</h2>
+      <p>Cara terpantas: <a href="mailto:contact@storagecalculators.com"><strong>contact@storagecalculators.com</strong></a>. Balasan biasanya dalam dua hari bekerja. Jika anda melaporkan ralat, anda akan dimaklumkan apabila pembetulan disiarkan.</p>
+      <h2>Apa yang perlu disertakan</h2>
+      <ul>
+        <li><strong>Keputusan atau formula salah:</strong> halaman kalkulator, nilai yang anda masukkan, keputusan yang diperoleh dan yang dijangka. Pautan ke dokumen pengeluar menjimatkan satu pusingan e-mel.</li>
+        <li><strong>Harga atau spesifikasi lapuk:</strong> pembekal atau model kamera yang mana, dan di mana angka semasa diterbitkan.</li>
+        <li><strong>Permintaan kalkulator:</strong> apa yang anda cuba saizkan dan data yang anda ada.</li>
+        <li><strong>Pepijat laman:</strong> pelayar, peranti dan apa yang anda klik.</li>
+      </ul>
+      <h2>Perkara yang tidak dapat dibantu</h2>
+      <ul>
+        <li>Sokongan pengeluar. Kami tidak bekerja untuk Hikvision, Ubiquiti, AWS atau mana-mana pengeluar.</li>
+        <li>Pengiklanan atau penempatan tajaan.</li>
+        <li>Pertukaran pautan atau artikel tetamu.</li>
+      </ul>
+      <h2>Privasi</h2>
+      <p>Mesej hanya digunakan untuk membalas anda dan membetulkan apa yang dilaporkan. Lihat <a href="/ms/dasar-privasi/">dasar privasi</a>.</p>
     `,
   },
 };

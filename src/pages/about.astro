@@ -1,74 +1,101 @@
 ---
 import LegalLayout from "~/layouts/LegalLayout.astro";
 import { SITE_NAME, SITE_URL } from "~/lib/seo";
+import { AUTHOR, CONTACT_EMAIL } from "~/lib/site";
 import type { PageRef } from "~/i18n/routing";
 import { DEFAULT_LOCALE } from "~/i18n/config";
 import { getAllCalculators } from "~/lib/registry";
+import { getCollection } from "astro:content";
 
 const all = getAllCalculators();
+const guides = await getCollection("guides");
 
 const seo = {
   title: `About | ${SITE_NAME}`,
   description:
-    "About StorageCalc: why this independent calculator site exists, who runs it, how the math is sourced from vendor docs, and how to get in touch.",
+    "Who runs StorageCalc, how each calculator's formula is sourced and checked against vendor documentation, how corrections are handled, and how the site is funded.",
   canonical: `${SITE_URL}/about/`,
 };
 
 const pageRef: PageRef = { kind: "static", key: "about" };
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: AUTHOR.name,
+  url: AUTHOR.url,
+  jobTitle: AUTHOR.role,
+  description: AUTHOR.bio,
+  email: `mailto:${CONTACT_EMAIL}`,
+  address: { "@type": "PostalAddress", addressLocality: "Vancouver", addressRegion: "British Columbia", addressCountry: "CA" },
+  sameAs: [AUTHOR.linkedin],
+  worksFor: { "@type": "Organization", name: "StorageCalc", url: SITE_URL },
+};
 ---
 
 <LegalLayout
   seo={seo}
   locale={DEFAULT_LOCALE}
   pageRef={pageRef}
+  eyebrow="About"
   title="About StorageCalc"
-  subtitle="An independent, free collection of storage calculators, built because vendor calculators were hiding the math."
+  subtitle="An independent, free set of storage calculators that show their formula, built by one person who was tired of vendor tools that don't."
 >
+  <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+
   <h2>Why this exists</h2>
-  <p>Every storage vendor (Hikvision, Synology, AWS, Azure) publishes a calculator on their site. They're all <em>okay</em>. But they have problems:</p>
+  <p>Every storage vendor publishes a sizing calculator. Hikvision has one, Synology has one, AWS has a pricing calculator, and so on. They work, but they share the same three problems:</p>
   <ul>
-    <li>They lock you into one vendor's options. Want to compare AWS S3 vs Azure Blob? You're flipping between three browser tabs and trying to remember egress rates.</li>
-    <li>They hide the formula. You enter inputs, see a number, and have no idea how it got there.</li>
-    <li>They're built for sales funnels. Marketing CTA on every screen, account creation prompts, "talk to sales" friction.</li>
+    <li><strong>They only know their own products.</strong> Comparing S3 Standard-IA against Azure Cool means three browser tabs and a spreadsheet.</li>
+    <li><strong>They hide the formula.</strong> You type in numbers, a result appears, and there's no way to check whether it's right or what assumption it made about bitrate or retrieval fees.</li>
+    <li><strong>They're sales tools.</strong> The output is a lead-capture form, a quote request, or a "talk to sales" button.</li>
   </ul>
-  <p>StorageCalc fixes all three. Every calculator shows its formula. Every page is free, signup-free, and built to give you a real number fast.</p>
+  <p>StorageCalc is the opposite. Every calculator prints the formula it uses, shows the intermediate numbers (bitrate per camera, parity overhead, per-tier cost), and links to the vendor documentation the constants came from. Nothing requires an account, and the inputs never leave your browser.</p>
 
-  <h2>How the math is sourced</h2>
-  <p>Each calculator's formula comes from publicly documented industry standards:</p>
+  <h2 id="author">Who runs it</h2>
+  <div class="not-prose mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-6">
+    <p class="text-lg font-semibold text-slate-900">{AUTHOR.name}</p>
+    <p class="mt-1 text-sm text-slate-700">{AUTHOR.affiliation}</p>
+    <p class="mt-1 text-sm text-slate-500">{AUTHOR.location}</p>
+    <p class="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-sm">
+      <a href={AUTHOR.linkedin} rel="me noopener" target="_blank" class="font-semibold text-brand-700 hover:text-brand-900">LinkedIn ↗</a>
+      <a href="/contact/" class="font-semibold text-brand-700 hover:text-brand-900">Get in touch →</a>
+    </p>
+  </div>
+  <p>{AUTHOR.name} is the founder and editor of StorageCalc. {AUTHOR.bio}</p>
+  <p>This is a one-person project. There is no editorial team, no content agency, and no vendor relationship. When a formula is wrong, the person reading your email is the person who wrote the formula, which is the fastest possible feedback loop. You can reach me at <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> or through the <a href="/contact/">contact page</a>.</p>
+
+  <h2>How the numbers are sourced and checked</h2>
+  <p>Each calculator has a "figures last checked" date at the bottom of its page. That date is when the constants in the calculator were last compared against the primary source:</p>
   <ul>
-    <li><strong>RAID</strong>: SNIA RAID definitions and standard formulas for capacity, parity, and fault tolerance.</li>
-    <li><strong>Surveillance</strong>: Published Hikvision, Hanwha (Wisenet), and Axis storage planning tables. Bitrate references at 25 fps per resolution, scaled by codec efficiency.</li>
-    <li><strong>Cloud</strong>: List prices from AWS S3, Azure Blob, Google Cloud Storage, and Firebase Cloud Storage public pricing pages, US region.</li>
+    <li><strong>RAID</strong>: capacity, parity and fault-tolerance formulas follow the SNIA <em>Common RAID Disk Data Format</em> definitions. There's no vendor data to go stale here; the only judgement calls are the performance multipliers, which are documented as theoretical maximums.</li>
+    <li><strong>Surveillance</strong>: the H.264 baseline bitrate table (per resolution at 25 fps) is derived from the storage-planning tables Hikvision, Hanwha and Axis publish for their own calculators, then cross-checked against a handful of real NVR deployments. H.265 and smart-codec savings use the reduction each vendor claims (50% and ~75%), which matches what those deployments recorded within about ±15%.</li>
+    <li><strong>Cloud</strong>: per-GB, per-request, retrieval and egress prices are copied from the public pricing pages of AWS, Azure, Google Cloud and Firebase for the default US region. Cloud prices change several times a year, so these pages are re-checked more often than the others, and the pricing table in the code is dated.</li>
   </ul>
-  <p>Where vendors don't publish exact numbers, we use conservative middle-of-the-road values that match real-world deployments. See each calculator's "About this calculator" section for the specific source.</p>
+  <p>Where a vendor doesn't publish a figure (Hikvision does not, for example, publish an exact H.265+ bitrate for every scene), the calculator uses a conservative middle value and says so in the "About this calculator" section of that page.</p>
 
-  <h2>What's here today</h2>
-  <p>{all.length} calculators across RAID, surveillance, NAS, cloud storage, and specialty domains. The full list is on the <a href="/">homepage</a>. More are added as the keyword research surfaces underserved searches.</p>
+  <h2>Corrections</h2>
+  <p>Wrong math is the highest-priority bug on this site. If you find a result that doesn't match the vendor's own documentation, or a price that's out of date, send it to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> with the inputs you used. Confirmed errors are fixed within a few days and the page's "last checked" date is updated. Every calculator page also has a feedback form at the bottom.</p>
 
-  <h2>What's NOT here</h2>
+  <h2>What's on the site</h2>
+  <p>{all.length} calculators across RAID, video surveillance and cloud object storage, plus {guides.length} long-form <a href="/guides/">guides</a> covering the questions the calculators can't answer on their own: which RAID level to pick, why an NVR fills up faster than predicted, how cloud storage classes actually bill. English is the primary language; French, Spanish, German, Arabic and Malay versions of the calculator pages exist for readers who prefer them, and the guides are English-only for now.</p>
+
+  <h2>What's deliberately not here</h2>
   <ul>
-    <li>No accounts. There is nothing to sign up for.</li>
-    <li>No tracking until you accept the cookie banner. See <a href="/privacy-policy/">Privacy Policy</a>.</li>
-    <li>No paid placement. Calculators aren't ranked by who pays, they're ranked alphabetically or by category.</li>
-    <li>No vendor sponsorship. If you see ads in the future, they'll be Google AdSense, clearly labeled.</li>
+    <li><strong>No accounts.</strong> There's nothing to sign up for and nothing to unlock.</li>
+    <li><strong>No affiliate links.</strong> When a page mentions a WD Purple or a Seagate SkyHawk, that's because installers actually use them, not because of a commission.</li>
+    <li><strong>No vendor sponsorship.</strong> Calculators are listed alphabetically within their category. Nobody pays to be listed or to be listed first.</li>
+    <li><strong>No tracking before consent.</strong> Google Analytics only loads after you accept the cookie banner. See the <a href="/privacy-policy/">Privacy Policy</a>.</li>
   </ul>
 
-  <h2>How this site stays free</h2>
-  <p>The site is static-hosted on Cloudflare Pages (free tier) and may eventually display Google ads to cover the domain renewal. Calculator math itself will always be free with no signup.</p>
-
-  <h2>Contributing / corrections</h2>
-  <p>If you find a bug, a wrong vendor spec, or have a calculator you'd like added:</p>
-  <ul>
-    <li>Open an issue or PR on the project's repository (link to be added).</li>
-    <li>Or email the operator (link to be added).</li>
-  </ul>
-  <p>Bug reports about wrong math are the highest priority, accuracy is the whole point.</p>
+  <h2>How the site is funded</h2>
+  <p>Hosting is a static site on Cloudflare Pages, which costs nothing. The domain and the time to keep prices and specs current are paid for by clearly labelled Google ads. Ads never influence which calculators exist, how they're ranked, or what they output.</p>
 
   <h2>Legal</h2>
   <ul>
     <li><a href="/privacy-policy/">Privacy Policy</a></li>
     <li><a href="/cookie-policy/">Cookie Policy</a></li>
     <li><a href="/terms-of-service/">Terms of Service</a></li>
-    <li><a href="/disclaimer/">Disclaimer</a>, the most important one. Read it before relying on any number for a real-world decision.</li>
+    <li><a href="/disclaimer/">Disclaimer</a>. Read it before relying on any number for a purchase or a design. Every result here is a planning estimate, not a guarantee.</li>
   </ul>
 </LegalLayout>

@@ -3,6 +3,7 @@ import { alternates, canonical, type PageRef } from "~/i18n/routing";
 import { getLocalizedCalculators } from "./localized";
 import { getStaticPages } from "~/i18n/static-pages";
 import { STATIC_PAGE_KEYS } from "~/i18n/types";
+import { getCollection } from "astro:content";
 
 /**
  * One sitemap per language, listed by sitemap-index.xml. Splitting them keeps
@@ -44,13 +45,16 @@ function rules(ref: PageRef): { priority: string; changefreq: string } {
         ? { priority: "0.3", changefreq: "yearly" }
         : { priority: "0.6", changefreq: "monthly" };
     case "calculator":
-      // The money pages.
       return { priority: "0.9", changefreq: "monthly" };
+    case "guides":
+      return { priority: "0.7", changefreq: "weekly" };
+    case "guide":
+      return { priority: "0.8", changefreq: "monthly" };
   }
 }
 
 /** Every page that exists in this locale, in a sensible crawl order. */
-export function pageRefs(locale: Locale): PageRef[] {
+export async function pageRefs(locale: Locale): Promise<PageRef[]> {
   const refs: PageRef[] = [{ kind: "home" }];
 
   for (const calc of getLocalizedCalculators(locale)) {
@@ -63,11 +67,21 @@ export function pageRefs(locale: Locale): PageRef[] {
     }
   }
 
+  if (locale === "en") {
+    refs.push({ kind: "guides" });
+    for (const guide of await getCollection("guides")) {
+      refs.push({ kind: "guide", slug: guide.id });
+    }
+  }
+
   return refs;
 }
 
-export function sitemapEntries(locale: Locale, lastmod: string): SitemapEntry[] {
-  return pageRefs(locale).map((ref) => {
+export async function sitemapEntries(
+  locale: Locale,
+  lastmod: string
+): Promise<SitemapEntry[]> {
+  return (await pageRefs(locale)).map((ref) => {
     const { priority, changefreq } = rules(ref);
     return {
       loc: canonical(locale, ref),
@@ -86,7 +100,8 @@ export function sitemapEntries(locale: Locale, lastmod: string): SitemapEntry[] 
 
 /** Locales that have at least one page, i.e. that get their own sitemap. */
 export function sitemapLocales(): Locale[] {
-  return ENABLED_LOCALES.filter((locale) => pageRefs(locale).length > 0);
+  // Every enabled locale has at least a home page.
+  return [...ENABLED_LOCALES];
 }
 
 export function sitemapPath(locale: Locale): string {

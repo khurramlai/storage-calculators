@@ -19,6 +19,8 @@ const ms: UIStrings = {
   nav: {
     calculators: "Kalkulator",
     about: "Tentang Kami",
+    guides: "Panduan",
+    contact: "Hubungi",
     tryRaid: "Cuba kalkulator RAID",
     openMenu: "Buka menu",
     language: "Bahasa",
@@ -52,7 +54,9 @@ const ms: UIStrings = {
     privacyNote:
       "Kalkulator ini berjalan dalam pelayar anda. Data anda tidak pernah meninggalkan peranti anda. Keputusan adalah anggaran, sila rujuk",
     disclaimerLink: "penafian kami",
-    alsoKnownAs: "Juga dikenali sebagai",
+    furtherReading: "Bacaan lanjut",
+    reviewed: "Angka terakhir disemak dengan dokumentasi pengeluar pada {date}.",
+    writtenBy: "Ditulis oleh",
   },
 
   home: {
@@ -131,6 +135,8 @@ const ms: UIStrings = {
     cookies: "Dasar Kuki",
     terms: "Terma Perkhidmatan",
     sitemap: "Peta Laman",
+    contact: "Hubungi",
+    guides: "Panduan",
     copyright:
       "© {year} StorageCalc. Semua kalkulator percuma digunakan. Keputusan adalah anggaran. Rujuk",
     builtWith:
@@ -152,9 +158,9 @@ const ms: UIStrings = {
       "Beritahu kami apa yang salah pada pengiraan, apa yang kurang, atau apa yang boleh menjadikan kalkulator ini lebih baik. Kami membaca semuanya.",
     openForm: "Buka borang",
     close: "Tutup",
-    notConfiguredStrong: "Borang belum ditetapkan.",
-    notConfiguredBody:
-      "Pemilik laman perlu menambah kunci akses Web3Forms dalam {env} sebagai {key}.",
+    emailFallbackStrong: "Lebih suka e-mel?",
+    emailFallbackBody: "Tulis kepada kami di",
+    contactPage: "atau gunakan halaman hubungi",
     typeLabel: "Jenis maklum balas",
     typePlaceholder: "Pilih satu",
     typeMath: "Ralat pengiraan atau formula",

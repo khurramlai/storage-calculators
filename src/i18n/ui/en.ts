@@ -15,6 +15,8 @@ const en = {
   nav: {
     calculators: "Calculators",
     about: "About",
+    guides: "Guides",
+    contact: "Contact",
     tryRaid: "Try RAID calculator",
     openMenu: "Open menu",
     language: "Language",
@@ -48,7 +50,9 @@ const en = {
     privacyNote:
       "This calculator runs in your browser. Inputs never leave your device. Results are estimates, see our",
     disclaimerLink: "disclaimer",
-    alsoKnownAs: "Also known as",
+    furtherReading: "Further reading",
+    reviewed: "Figures last checked against vendor documentation on {date}.",
+    writtenBy: "Written by",
   },
 
   home: {
@@ -126,6 +130,8 @@ const en = {
     cookies: "Cookie Policy",
     terms: "Terms of Service",
     sitemap: "Sitemap",
+    contact: "Contact",
+    guides: "Guides",
     copyright:
       "© {year} StorageCalc. All calculators free to use. Results are estimates. See",
     builtWith: "Built with Astro + Tailwind. Static, fast, privacy-first.",
@@ -146,9 +152,9 @@ const en = {
       "Tell us what's wrong with the math, what's missing, or what would make this calculator better. We read everything.",
     openForm: "Open form",
     close: "Close",
-    notConfiguredStrong: "Form not configured yet.",
-    notConfiguredBody:
-      "The site owner needs to add a Web3Forms access key to {env} as {key}.",
+    emailFallbackStrong: "Prefer email?",
+    emailFallbackBody: "Write to us at",
+    contactPage: "or use the contact page",
     typeLabel: "Type of feedback",
     typePlaceholder: "Pick one",
     typeMath: "Error in math or formula",

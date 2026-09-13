@@ -46,8 +46,11 @@ export function localizeCalculator(
           intro: tr.content.intro ?? calc.content?.intro,
           formula: tr.content.formula ?? calc.content?.formula,
           useCases: tr.content.useCases ?? calc.content?.useCases,
+          // Deep-dive sections are English-only for now; never leak them into
+          // a translated page.
+          sections: undefined,
         }
-      : calc.content,
+      : { ...calc.content, sections: undefined },
     faqs: tr.faqs?.length ? tr.faqs : calc.faqs,
   };
 }

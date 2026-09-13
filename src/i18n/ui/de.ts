@@ -19,6 +19,8 @@ const de: UIStrings = {
   nav: {
     calculators: "Rechner",
     about: "Über uns",
+    guides: "Ratgeber",
+    contact: "Kontakt",
     tryRaid: "RAID-Rechner ausprobieren",
     openMenu: "Menü öffnen",
     language: "Sprache",
@@ -52,7 +54,9 @@ const de: UIStrings = {
     privacyNote:
       "Dieser Rechner läuft in Ihrem Browser. Ihre Eingaben verlassen Ihr Gerät nie. Die Ergebnisse sind Schätzwerte, siehe unseren",
     disclaimerLink: "Haftungsausschluss",
-    alsoKnownAs: "Auch bekannt als",
+    furtherReading: "Weiterführende Artikel",
+    reviewed: "Zahlen zuletzt am {date} mit der Herstellerdokumentation abgeglichen.",
+    writtenBy: "Verfasst von",
   },
 
   home: {
@@ -131,6 +135,8 @@ const de: UIStrings = {
     cookies: "Cookie-Richtlinie",
     terms: "Nutzungsbedingungen",
     sitemap: "Sitemap",
+    contact: "Kontakt",
+    guides: "Ratgeber",
     copyright:
       "© {year} StorageCalc. Alle Rechner kostenlos nutzbar. Ergebnisse sind Schätzwerte. Siehe",
     builtWith:
@@ -152,9 +158,9 @@ const de: UIStrings = {
       "Sagen Sie uns, was an der Berechnung nicht stimmt, was fehlt oder was diesen Rechner besser machen würde. Wir lesen alles.",
     openForm: "Formular öffnen",
     close: "Schließen",
-    notConfiguredStrong: "Formular noch nicht eingerichtet.",
-    notConfiguredBody:
-      "Der Betreiber muss einen Web3Forms-Zugangsschlüssel in {env} als {key} hinterlegen.",
+    emailFallbackStrong: "Lieber per E-Mail?",
+    emailFallbackBody: "Schreiben Sie uns an",
+    contactPage: "oder nutzen Sie die Kontaktseite",
     typeLabel: "Art der Rückmeldung",
     typePlaceholder: "Bitte auswählen",
     typeMath: "Fehler in Berechnung oder Formel",

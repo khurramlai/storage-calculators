@@ -33,7 +33,7 @@ const pages: StaticPages = {
       <p>Lorsque les constructeurs ne publient pas de chiffres exacts, nous retenons des valeurs médianes prudentes, cohérentes avec les déploiements réels. La section « À propos de ce calculateur » de chaque page précise la source utilisée.</p>
 
       <h2>Ce que vous trouverez ici</h2>
-      <p>Une bibliothèque de calculateurs couvrant le RAID, la vidéosurveillance, le NAS, le stockage cloud et quelques domaines spécialisés. La liste complète se trouve sur la <a href="/fr/">page d'accueil</a>. De nouveaux calculateurs sont ajoutés au fil des besoins mal couverts que nous identifions.</p>
+      <p>Une bibliothèque de calculateurs couvrant le RAID, la vidéosurveillance, le NAS, le stockage cloud et quelques domaines spécialisés. La liste complète se trouve sur la <a href="/fr/">page d'accueil</a>. De nouveaux calculateurs sont ajoutés lorsque des lecteurs en font la demande et que la formule est documentée publiquement.</p>
 
       <h2>Ce que vous n'y trouverez PAS</h2>
       <ul>
@@ -44,13 +44,12 @@ const pages: StaticPages = {
       </ul>
 
       <h2>Comment ce site reste gratuit</h2>
-      <p>Le site est hébergé en statique sur Cloudflare Pages (offre gratuite) et pourra afficher des annonces Google pour couvrir le renouvellement du nom de domaine. Les calculs, eux, resteront toujours gratuits et sans inscription.</p>
+      <p>Le site est hébergé en statique sur Cloudflare Pages. Le nom de domaine et le temps passé à maintenir les tarifs et spécifications à jour sont financés par des annonces Google clairement identifiées. Les annonces n'influencent jamais les calculateurs proposés, leur ordre ni leurs résultats.</p>
 
       <h2>Contributions et corrections</h2>
       <p>Si vous repérez un bug, une spécification constructeur erronée, ou si vous souhaitez qu'un calculateur soit ajouté :</p>
       <ul>
-        <li>Ouvrez un ticket ou une pull request sur le dépôt du projet (lien à venir).</li>
-        <li>Ou écrivez à l'éditeur du site (lien à venir).</li>
+        <li>Écrivez à <a href="mailto:contact@storagecalculators.com">contact@storagecalculators.com</a> ou passez par la <a href="/fr/contact/">page de contact</a>, en précisant les valeurs saisies et le résultat attendu.</li>
       </ul>
       <p>Les signalements d'erreurs de calcul sont traités en priorité : l'exactitude est la raison d'être de ce site.</p>
 
@@ -352,6 +351,33 @@ const pages: StaticPages = {
 
       <h2>13. Contact</h2>
       <p>Des questions ? Consultez la page <a href="/fr/a-propos/">À propos</a>.</p>
+    `,
+  },
+  contact: {
+    slug: "contact",
+    title: "Contact",
+    description:
+      "Comment joindre la personne qui gère StorageCalc : signaler une formule erronée ou un tarif obsolète, demander un calculateur ou poser une question.",
+    subtitle:
+      "Une seule personne gère ce site et lit chaque message. Les corrections de calcul sont traitées en priorité.",
+    body: `
+      <h2>E-mail</h2>
+      <p>Le moyen le plus rapide : <a href="mailto:contact@storagecalculators.com"><strong>contact@storagecalculators.com</strong></a>. Réponse généralement sous deux jours ouvrés. Si vous signalez une erreur, vous serez prévenu quand la correction est en ligne.</p>
+      <h2>Que préciser</h2>
+      <ul>
+        <li><strong>Résultat ou formule erronés :</strong> la page du calculateur, vos valeurs d'entrée, le résultat obtenu et celui attendu. Un lien vers le document constructeur de référence fait gagner un aller-retour.</li>
+        <li><strong>Tarif ou spécification obsolète :</strong> le fournisseur ou le modèle de caméra concerné, et où le chiffre à jour est publié.</li>
+        <li><strong>Demande de calculateur :</strong> ce que vous cherchez à dimensionner et les données dont vous disposez.</li>
+        <li><strong>Bug du site :</strong> navigateur, appareil et action effectuée.</li>
+      </ul>
+      <h2>Ce que nous ne pouvons pas faire</h2>
+      <ul>
+        <li>Assurer le support d'un constructeur. Nous ne travaillons ni pour Hikvision, ni pour Ubiquiti, ni pour AWS.</li>
+        <li>Vendre des emplacements publicitaires ou des placements sponsorisés.</li>
+        <li>Répondre aux demandes d'échange de liens ou d'articles invités.</li>
+      </ul>
+      <h2>Confidentialité</h2>
+      <p>Vos messages servent uniquement à vous répondre et à corriger ce que vous avez signalé. Voir la <a href="/fr/politique-de-confidentialite/">politique de confidentialité</a>.</p>
     `,
   },
 };

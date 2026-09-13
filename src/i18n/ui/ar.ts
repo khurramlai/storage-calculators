@@ -19,6 +19,8 @@ const ar: UIStrings = {
   nav: {
     calculators: "الحاسبات",
     about: "من نحن",
+    guides: "أدلة",
+    contact: "اتصل بنا",
     tryRaid: "جرّب حاسبة RAID",
     openMenu: "فتح القائمة",
     language: "اللغة",
@@ -52,7 +54,9 @@ const ar: UIStrings = {
     privacyNote:
       "تعمل هذه الحاسبة داخل متصفحك، ولا تغادر بياناتك جهازك إطلاقًا. النتائج تقديرية، راجع",
     disclaimerLink: "إخلاء المسؤولية",
-    alsoKnownAs: "تُعرف أيضًا باسم",
+    furtherReading: "قراءات إضافية",
+    reviewed: "تم التحقق من الأرقام آخر مرة مقابل وثائق الشركة المصنّعة بتاريخ {date}.",
+    writtenBy: "بقلم",
   },
 
   home: {
@@ -130,6 +134,8 @@ const ar: UIStrings = {
     cookies: "سياسة ملفات تعريف الارتباط",
     terms: "شروط الاستخدام",
     sitemap: "خريطة الموقع",
+    contact: "اتصل بنا",
+    guides: "أدلة",
     copyright:
       "© {year} StorageCalc. جميع الحاسبات مجانية والنتائج تقديرية. راجع",
     builtWith:
@@ -151,9 +157,9 @@ const ar: UIStrings = {
       "أخبرنا بما هو خطأ في الحساب أو بما ينقص أو بما يجعل هذه الحاسبة أفضل. نقرأ كل الرسائل.",
     openForm: "فتح النموذج",
     close: "إغلاق",
-    notConfiguredStrong: "لم يُضبط النموذج بعد.",
-    notConfiguredBody:
-      "على مالك الموقع إضافة مفتاح وصول Web3Forms في {env} باسم {key}.",
+    emailFallbackStrong: "تفضّل البريد الإلكتروني؟",
+    emailFallbackBody: "راسلنا على",
+    contactPage: "أو استخدم صفحة الاتصال",
     typeLabel: "نوع الملاحظة",
     typePlaceholder: "اختر خيارًا",
     typeMath: "خطأ في الحساب أو المعادلة",

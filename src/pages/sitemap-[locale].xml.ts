@@ -14,9 +14,11 @@ export function getStaticPaths() {
   }));
 }
 
-export const GET: APIRoute = ({ props }) => {
+export const GET: APIRoute = async ({ props }) => {
   const { locale } = props as { locale: Locale };
-  const body = renderUrlset(sitemapEntries(locale, new Date().toISOString()));
+  const body = renderUrlset(
+    await sitemapEntries(locale, new Date().toISOString())
+  );
 
   return new Response(body, {
     headers: { "Content-Type": "application/xml; charset=utf-8" },

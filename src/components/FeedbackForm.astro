@@ -11,7 +11,9 @@
  */
 
 import { DEFAULT_LOCALE, type Locale } from "~/i18n/config";
-import { strings, fmt } from "~/i18n";
+import { strings } from "~/i18n";
+import { staticHref } from "~/i18n/routing";
+import { CONTACT_EMAIL } from "~/lib/site";
 
 interface Props {
   /** Calculator title, used as the email subject prefix */
@@ -64,9 +66,10 @@ const isConfigured = accessKey && accessKey !== "YOUR_WEB3FORMS_ACCESS_KEY_HERE"
     <div class="mt-6 border-t border-amber-200 pt-6">
       {
         !isConfigured ? (
-          <div role="alert" class="rounded-xl border border-amber-300 bg-amber-100 px-4 py-3 text-sm text-amber-900">
-            <strong>{s.feedback.notConfiguredStrong}</strong> {fmt(s.feedback.notConfiguredBody, { env: ".env", key: "PUBLIC_WEB3FORMS_KEY" })}
-            Free at <a href="https://web3forms.com" class="underline" rel="noopener noreferrer" target="_blank">web3forms.com</a>.
+          <div class="rounded-xl border border-amber-200 bg-white px-4 py-3 text-sm text-slate-800">
+            <strong>{s.feedback.emailFallbackStrong}</strong> {s.feedback.emailFallbackBody}
+            <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`Feedback: ${calculatorTitle}`)}`} class="font-semibold text-brand-700 underline">{CONTACT_EMAIL}</a>
+            {" "}{s.feedback.contactPage}: <a href={staticHref(locale, "contact")} class="underline hover:text-brand-900">{s.nav.contact}</a>.
           </div>
         ) : (
           <form

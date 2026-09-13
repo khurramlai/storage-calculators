@@ -16,6 +16,8 @@ const es: UIStrings = {
   nav: {
     calculators: "Calculadoras",
     about: "Acerca de",
+    guides: "Guías",
+    contact: "Contacto",
     tryRaid: "Probar la calculadora RAID",
     openMenu: "Abrir el menú",
     language: "Idioma",
@@ -49,7 +51,9 @@ const es: UIStrings = {
     privacyNote:
       "Esta calculadora funciona en tu navegador. Tus datos nunca salen de tu dispositivo. Los resultados son estimaciones; consulta nuestro",
     disclaimerLink: "descargo de responsabilidad",
-    alsoKnownAs: "También conocida como",
+    furtherReading: "Para saber más",
+    reviewed: "Cifras comprobadas por última vez con la documentación del fabricante el {date}.",
+    writtenBy: "Escrito por",
   },
 
   home: {
@@ -128,6 +132,8 @@ const es: UIStrings = {
     cookies: "Política de cookies",
     terms: "Términos del servicio",
     sitemap: "Mapa del sitio",
+    contact: "Contacto",
+    guides: "Guías",
     copyright:
       "© {year} StorageCalc. Todas las calculadoras son gratuitas. Los resultados son estimaciones. Consulta el",
     builtWith:
@@ -149,9 +155,9 @@ const es: UIStrings = {
       "Cuéntanos qué falla en el cálculo, qué falta o qué mejoraría esta calculadora. Lo leemos todo.",
     openForm: "Abrir el formulario",
     close: "Cerrar",
-    notConfiguredStrong: "El formulario aún no está configurado.",
-    notConfiguredBody:
-      "El propietario del sitio debe añadir una clave de acceso de Web3Forms en {env} como {key}.",
+    emailFallbackStrong: "¿Prefieres el correo?",
+    emailFallbackBody: "Escríbenos a",
+    contactPage: "o usa la página de contacto",
     typeLabel: "Tipo de comentario",
     typePlaceholder: "Elige una opción",
     typeMath: "Error de cálculo o de fórmula",

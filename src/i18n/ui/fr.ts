@@ -16,6 +16,8 @@ const fr: UIStrings = {
   nav: {
     calculators: "Calculateurs",
     about: "À propos",
+    guides: "Guides",
+    contact: "Contact",
     tryRaid: "Essayer le calculateur RAID",
     openMenu: "Ouvrir le menu",
     language: "Langue",
@@ -49,7 +51,9 @@ const fr: UIStrings = {
     privacyNote:
       "Ce calculateur fonctionne dans votre navigateur. Vos données ne quittent jamais votre appareil. Les résultats sont des estimations, voir notre",
     disclaimerLink: "avertissement",
-    alsoKnownAs: "Également appelé",
+    furtherReading: "Pour aller plus loin",
+    reviewed: "Chiffres vérifiés pour la dernière fois sur la documentation constructeur le {date}.",
+    writtenBy: "Rédigé par",
   },
 
   home: {
@@ -128,6 +132,8 @@ const fr: UIStrings = {
     cookies: "Politique relative aux cookies",
     terms: "Conditions d'utilisation",
     sitemap: "Plan du site",
+    contact: "Contact",
+    guides: "Guides",
     copyright:
       "© {year} StorageCalc. Tous les calculateurs sont gratuits. Les résultats sont des estimations. Voir",
     builtWith: "Réalisé avec Astro + Tailwind. Statique, rapide, respectueux de la vie privée.",
@@ -148,9 +154,9 @@ const fr: UIStrings = {
       "Dites-nous ce qui cloche dans le calcul, ce qui manque, ou ce qui rendrait ce calculateur meilleur. Nous lisons tout.",
     openForm: "Ouvrir le formulaire",
     close: "Fermer",
-    notConfiguredStrong: "Formulaire pas encore configuré.",
-    notConfiguredBody:
-      "Le propriétaire du site doit ajouter une clé d'accès Web3Forms dans {env} sous {key}.",
+    emailFallbackStrong: "Vous préférez l'e-mail ?",
+    emailFallbackBody: "Écrivez-nous à",
+    contactPage: "ou utilisez la page de contact",
     typeLabel: "Type de retour",
     typePlaceholder: "Choisissez une option",
     typeMath: "Erreur de calcul ou de formule",
