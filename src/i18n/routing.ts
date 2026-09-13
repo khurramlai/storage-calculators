@@ -1,6 +1,6 @@
 import {
   DEFAULT_LOCALE,
-  ENABLED_LOCALES,
+  INDEXED_LOCALES,
   LOCALE_META,
   isLocale,
   type Locale,
@@ -85,9 +85,13 @@ function localeHasPage(locale: Locale, ref: PageRef): boolean {
   }
 }
 
-/** Locales that can actually serve this page, in LOCALES order. */
+/**
+ * Locales that serve this page AND are open to indexing, in LOCALES order.
+ * Drives the language switcher and hreflang, so a noindexed locale is never
+ * linked from an indexed page.
+ */
 export function availableLocales(ref: PageRef): Locale[] {
-  return ENABLED_LOCALES.filter((locale) => localeHasPage(locale, ref));
+  return INDEXED_LOCALES.filter((locale) => localeHasPage(locale, ref));
 }
 
 export interface Alternate {

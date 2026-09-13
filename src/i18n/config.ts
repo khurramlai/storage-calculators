@@ -20,8 +20,24 @@ export const LOCALES = [
 
 export type Locale = (typeof LOCALES)[number];
 
-/** Locales that actually ship translated content (built + linked + in sitemap). */
+/** Locales that are built and served at their URLs. */
 export const ENABLED_LOCALES: readonly Locale[] = ["en", "fr", "es", "de", "ar", "ms"];
+
+/**
+ * Locales that search engines are invited to index. A locale that is enabled
+ * but not indexed still builds and serves (so no URL ever 404s), but its pages
+ * carry a noindex tag and are left out of the sitemaps, the hreflang
+ * alternates and the language switcher.
+ *
+ * The translated calculator pages are held back here until they carry the
+ * same depth of editorial content as the English ones; add a locale back to
+ * this list to re-index it.
+ */
+export const INDEXED_LOCALES: readonly Locale[] = ["en"];
+
+export function isIndexed(locale: Locale): boolean {
+  return INDEXED_LOCALES.includes(locale);
+}
 
 export interface LocaleMeta {
   code: Locale;

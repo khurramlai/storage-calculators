@@ -1,4 +1,4 @@
-import { ENABLED_LOCALES, LOCALE_META, type Locale } from "~/i18n/config";
+import { INDEXED_LOCALES, LOCALE_META, type Locale } from "~/i18n/config";
 import { alternates, canonical, type PageRef } from "~/i18n/routing";
 import { getLocalizedCalculators } from "./localized";
 import { getStaticPages } from "~/i18n/static-pages";
@@ -98,10 +98,9 @@ export async function sitemapEntries(
   });
 }
 
-/** Locales that have at least one page, i.e. that get their own sitemap. */
+/** Locales that get their own sitemap: only the ones open to indexing. */
 export function sitemapLocales(): Locale[] {
-  // Every enabled locale has at least a home page.
-  return [...ENABLED_LOCALES];
+  return [...INDEXED_LOCALES];
 }
 
 export function sitemapPath(locale: Locale): string {

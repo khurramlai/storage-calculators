@@ -4,7 +4,7 @@ import Header from "~/components/Header.astro";
 import Footer from "~/components/Footer.astro";
 import CookieBanner from "~/components/CookieBanner.astro";
 import type { SeoMeta } from "~/lib/seo";
-import { DEFAULT_LOCALE, LOCALE_META, type Locale } from "~/i18n/config";
+import { DEFAULT_LOCALE, LOCALE_META, isIndexed, type Locale } from "~/i18n/config";
 import { alternates, type PageRef } from "~/i18n/routing";
 
 interface Props {
@@ -25,6 +25,7 @@ const {
 const meta = LOCALE_META[locale];
 const canonical = seo.canonical ?? new URL(Astro.url.pathname, Astro.site).toString();
 const langAlternates = alternates(pageRef);
+const indexed = isIndexed(locale);
 ---
 
 <!doctype html>
@@ -39,7 +40,11 @@ const langAlternates = alternates(pageRef);
     {seo.keywords?.length && (
       <meta name="keywords" content={seo.keywords.join(", ")} />
     )}
-    <link rel="canonical" href={canonical} />
+    {indexed ? (
+      <link rel="canonical" href={canonical} />
+    ) : (
+      <meta name="robots" content="noindex, follow" />
+    )}
 
     {langAlternates.map((alt) => (
       <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />
