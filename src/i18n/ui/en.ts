@@ -218,6 +218,9 @@ const en = {
     capacityBreakdownAria: "Capacity breakdown: {segments}",
 
     cameraCount: "Number of cameras",
+    cameraModel: "Camera model",
+    cameraModelCustom: "Custom / not listed",
+    cameraModelHelp: "Pick a model to fill in its resolution, frame rate and codec. Change any field to go custom.",
     retention: "Retention",
     retentionHelp: "How many days of footage to keep.",
     days: "days",
@@ -380,6 +383,8 @@ const en = {
       "Genetec Security Center Archivers commonly aggregate many cameras across long retention windows; defaults reflect that scale.",
     unifi:
       "UniFi Protect G4 and G5 cameras default to H.265 at native resolution. UniFi Protect itself trims footage automatically when the drive fills.",
+    honeywell:
+      "Honeywell 30, 35 and 60 Series cameras support H.265 with Smart Codec, which Honeywell rates at up to 50% saving over plain H.265 on static scenes.",
   },
 } as const;
 

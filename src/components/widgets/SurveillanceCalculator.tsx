@@ -6,6 +6,7 @@ import {
   RECORDING_MODES,
   RESOLUTIONS,
   VENDOR_PRESETS,
+  type CameraModel,
   type Codec,
   type RecordingMode,
   type Resolution,
@@ -17,8 +18,12 @@ import ActionBar from "./parts/ActionBar";
 import CodecComparisonChart from "./parts/CodecComparisonChart";
 
 interface SurveillanceWidgetProps {
-  /** Vendor preset to seed defaults (Hikvision, Hanwha, Axis, Genetec, UniFi) */
+  /** Vendor preset to seed defaults (Hikvision, Hanwha, Axis, Genetec, UniFi, Honeywell) */
   preset?: VendorKey;
+  /** Optional camera-model picker. Selecting a model seeds resolution/fps/codec. */
+  models?: CameraModel[];
+  /** Model id selected on first load; omit to start on "Custom". */
+  defaultModel?: string;
   /** Override per-input defaults regardless of preset */
   defaults?: Partial<{
     cameras: number;
@@ -88,6 +93,33 @@ export default function SurveillanceCalculator({
   const [hoursPerDay, setHoursPerDay] = useState(initial.hoursPerDay);
   const [retentionDays, setRetentionDays] = useState(initial.retentionDays);
 
+  // Camera-model picker (vendor pages only). "" means custom / not listed.
+  const models = props.models ?? [];
+  const initialModel = models.find((m) => m.id === props.defaultModel);
+  const [modelId, setModelId] = useState(initialModel?.id ?? "");
+  const selectedModel = models.find((m) => m.id === modelId);
+  const modelGroups = useMemo(() => {
+    const groups = new Map<string, CameraModel[]>();
+    for (const m of models) {
+      const key = m.group ?? "";
+      groups.set(key, [...(groups.get(key) ?? []), m]);
+    }
+    return [...groups.entries()];
+  }, [models]);
+
+  function applyModel(id: string) {
+    setModelId(id);
+    const m = models.find((x) => x.id === id);
+    if (!m) return;
+    setResolution(m.resolution);
+    setFps(m.fps);
+    setCodec(m.codec);
+  }
+  // Any manual change to a model-driven field drops back to "Custom".
+  function pickResolution(r: Resolution) { setResolution(r); setModelId(""); }
+  function pickFps(f: number) { setFps(f); setModelId(""); }
+  function pickCodec(c: Codec) { setCodec(c); setModelId(""); }
+
   const resultsRef = useRef<HTMLDivElement>(null);
   const [highlight, setHighlight] = useState(false);
 
@@ -105,6 +137,7 @@ export default function SurveillanceCalculator({
     setRecordingMode(initial.recordingMode);
     setHoursPerDay(initial.hoursPerDay);
     setRetentionDays(initial.retentionDays);
+    setModelId(initialModel?.id ?? "");
   }
 
   const result = useMemo(
@@ -117,8 +150,9 @@ export default function SurveillanceCalculator({
         recordingMode,
         hoursPerDay,
         retentionDays,
+        customBitrateKbps: selectedModel?.bitrateKbps,
       }),
-    [cameras, resolution, fps, codec, recordingMode, hoursPerDay, retentionDays]
+    [cameras, resolution, fps, codec, recordingMode, hoursPerDay, retentionDays, selectedModel]
   );
 
   return (
@@ -128,6 +162,35 @@ export default function SurveillanceCalculator({
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-lg font-semibold text-slate-900">{t.inputs}</h2>
             <div className="grid grid-cols-12 gap-4">
+              {models.length > 0 && (
+                <Field label={t.cameraModel} cols={12} help={t.cameraModelHelp}>
+                  {({ fieldId, helpId }) => (
+                    <select
+                      id={fieldId}
+                      aria-describedby={helpId}
+                      value={modelId}
+                      onChange={(e) => applyModel(e.target.value)}
+                      className={inputCls}
+                    >
+                      <option value="">{t.cameraModelCustom}</option>
+                      {modelGroups.map(([group, list]) =>
+                        group ? (
+                          <optgroup key={group} label={group}>
+                            {list.map((m) => (
+                              <option key={m.id} value={m.id}>{m.label}</option>
+                            ))}
+                          </optgroup>
+                        ) : (
+                          list.map((m) => (
+                            <option key={m.id} value={m.id}>{m.label}</option>
+                          ))
+                        )
+                      )}
+                    </select>
+                  )}
+                </Field>
+              )}
+
               <Field label={t.cameraCount} cols={6}>
                 {({ fieldId }) => (
                   <input
@@ -169,7 +232,7 @@ export default function SurveillanceCalculator({
                   <select
                     id={fieldId}
                     value={resolution}
-                    onChange={(e) => setResolution(e.target.value as Resolution)}
+                    onChange={(e) => pickResolution(e.target.value as Resolution)}
                     className={inputCls}
                   >
                     {RESOLUTIONS.map((r) => (
@@ -187,7 +250,7 @@ export default function SurveillanceCalculator({
                     id={fieldId}
                     aria-describedby={helpId}
                     value={fps}
-                    onChange={(e) => setFps(Number(e.target.value))}
+                    onChange={(e) => pickFps(Number(e.target.value))}
                     className={inputCls}
                   >
                     {FPS_OPTIONS.map((f) => (
@@ -205,7 +268,7 @@ export default function SurveillanceCalculator({
                     id={fieldId}
                     aria-describedby={helpId}
                     value={codec}
-                    onChange={(e) => setCodec(e.target.value as Codec)}
+                    onChange={(e) => pickCodec(e.target.value as Codec)}
                     className={inputCls}
                   >
                     {CODECS.map((c) => (

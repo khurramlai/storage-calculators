@@ -66,6 +66,7 @@ const config: CalculatorConfig = {
   ],
 
   related: [
+    "honeywell-storage-calculator",
     "video-surveillance-storage-calculator",
     "nvr-storage-calculator",
     "cctv-storage-calculator",

@@ -230,6 +230,9 @@ const de: UIStrings = {
     capacityBreakdownAria: "Kapazitätsaufteilung: {segments}",
 
     cameraCount: "Anzahl der Kameras",
+    cameraModel: "Kameramodell",
+    cameraModelCustom: "Benutzerdefiniert / nicht gelistet",
+    cameraModelHelp: "Wählen Sie ein Modell, um Auflösung, Bildrate und Codec zu übernehmen. Ändern Sie ein Feld, um zu benutzerdefiniert zu wechseln.",
     retention: "Aufbewahrung",
     retentionHelp: "Wie viele Tage an Aufnahmen aufbewahrt werden sollen.",
     days: "Tage",
@@ -371,6 +374,8 @@ const de: UIStrings = {
       "Genetec-Security-Center-Archiver bündeln typischerweise viele Kameras über lange Aufbewahrungszeiträume; die Standardwerte spiegeln diese Größenordnung wider.",
     unifi:
       "UniFi-Protect-Kameras der Reihen G4 und G5 nutzen H.265 in nativer Auflösung. UniFi Protect löscht ältere Aufnahmen automatisch, sobald die Festplatte voll ist.",
+    honeywell:
+      "Honeywell-Kameras der Serien 30, 35 und 60 unterstützen H.265 mit Smart Codec, den Honeywell mit bis zu 50 % Ersparnis gegenüber reinem H.265 bei statischen Szenen angibt.",
   },
 
   tierNotes: {

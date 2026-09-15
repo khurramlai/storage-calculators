@@ -223,6 +223,9 @@ const ar: UIStrings = {
     capacityBreakdownAria: "توزيع السعة: {segments}",
 
     cameraCount: "عدد الكاميرات",
+    cameraModel: "طراز الكاميرا",
+    cameraModelCustom: "مخصص / غير مدرج",
+    cameraModelHelp: "اختر طرازًا لتعبئة الدقة ومعدل الإطارات والترميز تلقائيًا. غيّر أي حقل للانتقال إلى الوضع المخصص.",
     retention: "مدة الاحتفاظ",
     retentionHelp: "عدد أيام التسجيل التي تريد الاحتفاظ بها.",
     days: "يومًا",
@@ -360,6 +363,8 @@ const ar: UIStrings = {
       "تجمع أنظمة Genetec Security Center Archiver عادةً عددًا كبيرًا من الكاميرات مع مدد احتفاظ طويلة، والقيم الافتراضية تعكس هذا الحجم.",
     unifi:
       "تستخدم كاميرات UniFi Protect من سلسلتي G4 وG5 ترميز H.265 بالدقة الأصلية، ويحذف UniFi Protect التسجيلات الأقدم تلقائيًا عند امتلاء القرص.",
+    honeywell:
+      "تدعم كاميرات Honeywell من السلاسل 30 و35 و60 ترميز H.265 مع Smart Codec، الذي تقدّر Honeywell توفيره بما يصل إلى 50% مقارنة بـ H.265 العادي في المشاهد الثابتة.",
   },
 
   tierNotes: {

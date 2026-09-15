@@ -229,6 +229,9 @@ const ms: UIStrings = {
     capacityBreakdownAria: "Pecahan kapasiti: {segments}",
 
     cameraCount: "Bilangan kamera",
+    cameraModel: "Model kamera",
+    cameraModelCustom: "Tersuai / tiada dalam senarai",
+    cameraModelHelp: "Pilih model untuk mengisi resolusi, kadar bingkai dan kodek. Ubah mana-mana medan untuk beralih ke tersuai.",
     retention: "Tempoh simpanan",
     retentionHelp: "Berapa hari rakaman yang hendak disimpan.",
     days: "hari",
@@ -369,6 +372,8 @@ const ms: UIStrings = {
       "Genetec Security Center Archiver lazimnya mengumpulkan banyak kamera dengan tempoh simpanan yang panjang; nilai lalai mencerminkan skala tersebut.",
     unifi:
       "Kamera UniFi Protect G4 dan G5 menggunakan H.265 pada resolusi asal. UniFi Protect memadamkan rakaman lama secara automatik apabila cakera penuh.",
+    honeywell:
+      "Kamera Honeywell Siri 30, 35 dan 60 menyokong H.265 dengan Smart Codec, yang Honeywell nilaikan sehingga 50% penjimatan berbanding H.265 biasa pada adegan statik.",
   },
 
   tierNotes: {

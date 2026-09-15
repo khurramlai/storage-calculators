@@ -212,6 +212,34 @@ export const VENDOR_PRESETS: Record<string, VendorPreset> = {
     retentionDays: 14,
     cameras: 4,
   },
+  honeywell: {
+    resolution: "5MP",
+    fps: 30,
+    codec: "h265+",
+    recordingMode: "continuous",
+    hoursPerDay: 24,
+    retentionDays: 30,
+    cameras: 8,
+  },
 };
 
 export type VendorKey = keyof typeof VENDOR_PRESETS;
+
+/**
+ * A specific camera model a vendor page can offer in a "Camera model" picker.
+ * Selecting one seeds resolution / fps / codec (and optionally a spec-sheet
+ * bitrate that overrides the estimate). The user can still change any field
+ * afterwards, at which point the picker shows "Custom".
+ */
+export interface CameraModel {
+  id: string;
+  /** Shown in the select, e.g. "HC35WB5R2 · 5 MP bullet" */
+  label: string;
+  /** Optional group heading for <optgroup>, e.g. "35 Series" */
+  group?: string;
+  resolution: Resolution;
+  fps: number;
+  codec: Codec;
+  /** Vendor-published main-stream bitrate at these settings, if known */
+  bitrateKbps?: number;
+}
