@@ -1,4 +1,27 @@
+import { rename, rm } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "astro/config";
+
+/**
+ * Emits Cloudflare's `_redirects` from src/pages/redirects-cf.txt.ts.
+ * Astro refuses to route a file whose name starts with "_", so the rules are
+ * generated under a temporary name and moved into place after the build.
+ */
+function cloudflareRedirects() {
+  return {
+    name: "cloudflare-redirects",
+    hooks: {
+      "astro:build:done": async ({ dir, logger }) => {
+        const root = fileURLToPath(dir);
+        const from = `${root}redirects-cf.txt`;
+        const to = `${root}_redirects`;
+        await rename(from, to);
+        await rm(`${root}redirects-cf.txt`, { force: true });
+        logger.info("wrote _redirects");
+      },
+    },
+  };
+}
 import react from "@astrojs/react";
 import mdx from "@astrojs/mdx";
 import tailwindcss from "@tailwindcss/vite";
@@ -12,7 +35,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   site: "https://storagecalculators.com",
   trailingSlash: "ignore",
-  integrations: [react(), mdx()],
+  integrations: [react(), mdx(), cloudflareRedirects()],
   vite: {
     plugins: [tailwindcss()],
   },

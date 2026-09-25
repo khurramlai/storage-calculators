@@ -20,18 +20,22 @@ export const LOCALES = [
 
 export type Locale = (typeof LOCALES)[number];
 
-/** Locales that are built and served at their URLs. */
-export const ENABLED_LOCALES: readonly Locale[] = ["en", "fr", "es", "de", "ar", "ms"];
+/**
+ * Locales that are built and served at their URLs.
+ *
+ * The translated locales were retired: their pages are no longer generated and
+ * every URL they had 301s to the equivalent English page (see
+ * src/lib/redirects.ts). The translated copy under src/i18n/content/ and
+ * src/i18n/pages/ is kept because the redirect map is derived from it, and so
+ * a locale can be brought back by listing it here again.
+ */
+export const ENABLED_LOCALES: readonly Locale[] = ["en"];
 
 /**
- * Locales that search engines are invited to index. A locale that is enabled
- * but not indexed still builds and serves (so no URL ever 404s), but its pages
- * carry a noindex tag and are left out of the sitemaps, the hreflang
- * alternates and the language switcher.
- *
- * The translated calculator pages are held back here until they carry the
- * same depth of editorial content as the English ones; add a locale back to
- * this list to re-index it.
+ * Locales that search engines are invited to index. Must be a subset of
+ * ENABLED_LOCALES: a locale that is enabled but not indexed still builds and
+ * serves, but carries a noindex tag and is left out of the sitemaps, the
+ * hreflang alternates and the language switcher.
  */
 export const INDEXED_LOCALES: readonly Locale[] = ["en"];
 
